@@ -27,8 +27,7 @@ Idioma: {idioma}
 ═══════════════════════════════════════════════════════════════
 ⚠️ REGLA OBLIGATORIA: La siguiente información proviene de 
 documentos reales adjuntados por el usuario. TODOS estos datos 
-deben integrarse como BASE del resultado final. No son "contexto 
-adicional" — son la MATERIA PRIMA.
+deben integrarse como BASE del resultado final.
 
 DATOS EXTRAÍDOS DE DOCUMENTOS:
 {informacion_documentos}
@@ -39,8 +38,25 @@ INSTRUCCIONES DE INTEGRACIÓN:
 - Si hay cifras/datos → INCORPÓRALOS como hechos
 - Si hay tono/valores/misión → REFLEJA ese tono
 - Si hay público objetivo → DIRÍGETE a esa audiencia
-- Si hay referencias visuales/estilo → ÚSALAS como dirección
 - El resultado final debe sentirse como si CONOCIERA la empresa/proyecto
+
+═══════════════════════════════════════════════════════════════
+[🎨 MANUAL DE MARCA - GUÍA DE ESTILO OBLIGATORIA]
+═══════════════════════════════════════════════════════════════
+⚠️ SI HAY MANUAL DE MARCA, es PARÁMETRO OBLIGATORIO DE ESTILO.
+Todo el prompt debe respetar estas directrices de marca.
+
+DIRECTRICES DE MARCA EXTRAÍDAS:
+{info_marca}
+
+REGLAS DE APLICACIÓN DEL MANUAL DE MARCA:
+- Si hay colores de marca → ESPECIFÍCALOS en el prompt (hex, nombres)
+- Si hay tipografías → NÓMBRALAS como fuentes requeridas
+- Si hay tono de voz → El prompt DEBE reflejar ese tono exacto
+- Si hay palabras permitidas/prohibidas → INCLÚYELAS como restricciones
+- Si hay estilo visual → DESCRÍBELO como dirección estética obligatoria
+- Si hay restricciones de logo/uso → AGRÉGALAS como limitaciones
+- La marca NO es sugerencia — es REGLA. Todo lo que diga el manual se cumple.
 
 ═══════════════════════════════════════════════════════════════
 [🔑 PALABRAS CLAVE FUNDAMENTALES]
@@ -71,16 +87,17 @@ Adapta la estructura según el tipo de herramienta:
   1. Rol/Contexto del sistema
   2. Instrucción principal clara
   3. Información base del proyecto (datos de documentos)
-  4. Especificaciones técnicas y parámetros
-  5. Detalles visuales/creativos/estilísticos
-  6. Restricciones (qué evitar)
-  7. Formato y calidad esperada
+  4. Directrices de marca (si hay manual)
+  5. Especificaciones técnicas y parámetros
+  6. Detalles visuales/creativos/estilísticos
+  7. Restricciones (qué evitar, incluyendo restricciones de marca)
+  8. Formato y calidad esperada
 
 ▸ SI ES SOFTWARE DE OFIMÁTICA (Word, Excel, PowerPoint, Google Docs, etc):
   1. Objetivo del documento/archivo
   2. Estructura completa (secciones, hojas, slides)
-  3. Contenido detallado por sección (con textos reales basados en documentos)
-  4. Formato: fuentes, colores, márgenes, estilos
+  3. Contenido detallado por sección (con textos reales de documentos)
+  4. Formato: fuentes de marca, colores de marca, márgenes, estilos
   5. Datos/tablas/gráficos a incluir
   6. Restricciones de formato y marca
   7. Checklist de revisión final
@@ -98,10 +115,10 @@ Adapta la estructura según el tipo de herramienta:
   1. Objetivo visual y audiencia
   2. Dimensiones y formato
   3. Composición y layout (zonas, jerarquía)
-  4. Paleta de colores y tipografía
-  5. Contenido textual por zona
-  6. Elementos gráficos e iconografía
-  7. Estándares de marca y restricciones
+  4. Paleta de colores DE MARCA (obligatoria si hay manual)
+  5. Tipografía DE MARCA (obligatoria si hay manual)
+  6. Contenido textual por zona
+  7. Elementos gráficos, iconografía y estilo DE MARCA
 
 ▸ SI ES MAPA CONCEPTUAL/DIAGRAMA (Miro, Lucidchart, MindMeister, XMind, Draw.io):
   1. Tema central y objetivo del mapa
@@ -109,22 +126,22 @@ Adapta la estructura según el tipo de herramienta:
   3. Sub-nodos y ramificaciones (nivel 2-3)
   4. Relaciones y conexiones entre nodos
   5. Jerarquía y agrupación visual
-  6. Código de colores por categoría
+  6. Código de colores (usar colores de marca si hay manual)
   7. Notas y detalles por nodo clave
 
 ▸ SI ES EDICIÓN AUDIOVISUAL (Premiere Pro, After Effects, DaVinci Resolve, Logic Pro):
   1. Objetivo del proyecto y público
   2. Estructura del timeline (actos, secciones)
   3. Tipo de cortes y transiciones
-  4. Tratamiento de color y estilo visual
+  4. Tratamiento de color (paleta de marca si aplica)
   5. Audio: música, efectos, voz
-  6. Gráficos y títulos
+  6. Gráficos y títulos (tipografía de marca si aplica)
   7. Especificaciones de exportación
 
 ▸ SI ES 3D/ANIMACIÓN (Blender, Cinema 4D, Unity, Unreal Engine, AutoCAD):
   1. Descripción de la escena/modelo
   2. Geometría y topología
-  3. Materiales y texturas
+  3. Materiales y texturas (colores de marca si aplica)
   4. Iluminación y cámaras
   5. Animación (si aplica)
   6. Render settings
@@ -142,6 +159,7 @@ Adapta la estructura según el tipo de herramienta:
 ✓ Chain-of-thought: Explicita el razonamiento
 ✓ Keyword-emphasis: Enfatiza palabras clave estratégicamente
 ✓ Data-grounding: Ancla el contenido en datos REALES de los documentos
+✓ Brand-compliance: Asegura coherencia con manual de marca
 
 ═══════════════════════════════════════════════════════════════
 [REQUISITOS NO-NEGOCIABLES]
@@ -150,6 +168,7 @@ Adapta la estructura según el tipo de herramienta:
 ✓ Ultra-específico para {herramienta}
 ✓ Incorpora COMPLETAMENTE las palabras clave: {palabras_clave}
 ✓ Los datos de documentos del usuario son la BASE del contenido
+✓ Si hay manual de marca → TODAS las directrices se aplican obligatoriamente
 ✓ Si hay nombre de empresa/proyecto → DEBE aparecer
 ✓ Si hay cifras o servicios → DEBEN estar incorporados
 ✓ Usa la estructura correcta según el tipo de herramienta
@@ -171,4 +190,5 @@ Comienza directamente con el contenido.
 RECORDATORIO FINAL:
 - Las palabras clave [{palabras_clave}] deben estar integradas naturalmente.
 - La información de los documentos debe ser la COLUMNA VERTEBRAL del contenido.
+- Si hay manual de marca, el estilo visual y tono son OBLIGATORIOS en todo el prompt.
 - El resultado debe sentirse personalizado y específico, NO genérico.
