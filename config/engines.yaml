@@ -2,11 +2,19 @@ motores:
   imagen:
     nombre: "🖼️ Generación de Imágenes"
     herramientas:
+      - "🌐 Genérico (cualquier IA de imagen)"
       - "DALL-E 3"
       - "Midjourney v6"
       - "Stable Diffusion XL"
+      - "Flux Pro 1.1"
       - "Ideogram"
       - "Leonardo.AI"
+      - "Adobe Firefly"
+      - "Playground v3"
+      - "Recraft V3"
+      - "Freepik AI"
+      - "Krea AI"
+      - "Imagen 3 (Google)"
     parametros:
       estilo:
         label: "Estilo visual"
@@ -17,6 +25,9 @@ motores:
           - "3D CGI"
           - "Pintura óleo"
           - "Abstracto"
+          - "Vectorial/Flat design"
+          - "Acuarela"
+          - "Pixel art"
       mood:
         label: "Mood/Atmósfera"
         opciones:
@@ -26,6 +37,8 @@ motores:
           - "Épico/Heroico"
           - "Melancólico"
           - "Futurista"
+          - "Cálido/Acogedor"
+          - "Minimalista/Limpio"
       resolucion:
         label: "Resolución"
         opciones:
@@ -44,11 +57,18 @@ motores:
   texto:
     nombre: "📝 Generación de Texto"
     herramientas:
+      - "🌐 Genérico (cualquier IA de texto)"
       - "ChatGPT"
       - "Claude"
       - "Gemini"
       - "Perplexity"
       - "Llama"
+      - "Mistral"
+      - "DeepSeek"
+      - "Grok"
+      - "Copilot (Microsoft)"
+      - "Jasper AI"
+      - "NotebookLM"
     parametros:
       tipo:
         label: "Tipo de contenido"
@@ -59,6 +79,10 @@ motores:
           - "Guion"
           - "Código"
           - "Análisis"
+          - "Informe/Reporte"
+          - "Carta formal"
+          - "Post redes sociales"
+          - "Resumen ejecutivo"
       tono:
         label: "Tono"
         opciones:
@@ -67,6 +91,8 @@ motores:
           - "Creativo"
           - "Técnico"
           - "Humorístico"
+          - "Persuasivo"
+          - "Académico"
       largo:
         label: "Largo del contenido"
         opciones:
@@ -80,15 +106,23 @@ motores:
           - "Bullet points"
           - "Q&A"
           - "Paso-a-paso"
+          - "Pirámide invertida"
+          - "Comparativa"
 
   musica:
     nombre: "🎵 Generación de Música"
     herramientas:
+      - "🌐 Genérico (cualquier IA de música)"
       - "Suno AI"
+      - "Udio"
+      - "Stable Audio"
       - "MusicLM"
       - "Jukebox"
       - "Soundraw"
       - "AIVA"
+      - "Beatoven.ai"
+      - "Loudly"
+      - "Mubert"
     parametros:
       genero:
         label: "Género musical"
@@ -99,6 +133,11 @@ motores:
           - "Electronic"
           - "Jazz"
           - "Clásica"
+          - "Reggaeton"
+          - "Lo-fi"
+          - "Ambient"
+          - "Cinematic/Soundtrack"
+          - "Folk/Acústico"
       mood:
         label: "Mood"
         opciones:
@@ -107,6 +146,8 @@ motores:
           - "Melancólico"
           - "Alegre"
           - "Épico"
+          - "Misterioso"
+          - "Romántico"
       duracion:
         label: "Duración"
         opciones:
@@ -120,11 +161,20 @@ motores:
           - "Canción completa"
           - "Loop"
           - "Para video"
+          - "Jingle/Comercial"
+          - "Podcast intro/outro"
 
   audio:
     nombre: "🎙️ Audio/Voz"
     herramientas:
+      - "🌐 Genérico (cualquier IA de audio)"
       - "ElevenLabs"
+      - "PlayHT"
+      - "Resemble AI"
+      - "Murf AI"
+      - "WellSaid Labs"
+      - "Speechify"
+      - "Lovo AI"
       - "Google NotebookLM"
       - "Vall-E"
       - "Tortoise TTS"
@@ -137,6 +187,9 @@ motores:
           - "Diálogo"
           - "Locución"
           - "Asistente"
+          - "Audiolibro"
+          - "Doblaje"
+          - "IVR/Menú telefónico"
       voz:
         label: "Tipo de voz"
         opciones:
@@ -157,14 +210,27 @@ motores:
           - "Amigable"
           - "Entusiasta"
           - "Dramático"
+          - "Calmado/Meditativo"
+          - "Noticiero"
 
   video:
     nombre: "🎬 Generación de Video"
     herramientas:
+      - "🌐 Genérico (cualquier IA de video)"
       - "Runway Gen-3"
+      - "Sora (OpenAI)"
+      - "Veo 2 (Google)"
+      - "Kling AI"
       - "Pika Labs"
+      - "Luma Dream Machine"
+      - "Minimax (Hailuo)"
       - "Synthesia"
       - "HeyGen"
+      - "CapCut AI"
+      - "Descript"
+      - "Opus Clip"
+      - "InVideo AI"
+      - "Viggle"
     parametros:
       tipo:
         label: "Tipo de video"
@@ -172,7 +238,11 @@ motores:
           - "Video corto"
           - "Video medio"
           - "Animación 2D"
-          - "Avatar"
+          - "Animación 3D"
+          - "Avatar/Presentador"
+          - "Motion graphics"
+          - "Documental"
+          - "Producto/Comercial"
       estilo:
         label: "Estilo"
         opciones:
@@ -180,6 +250,15 @@ motores:
           - "Animado"
           - "Mixto"
           - "Película"
+          - "Stop motion"
+          - "Collage/Recorte"
+      aspecto:
+        label: "Aspecto"
+        opciones:
+          - "16:9 (Horizontal)"
+          - "9:16 (Vertical/Reel)"
+          - "1:1 (Cuadrado)"
+          - "4:5 (Instagram)"
       uso:
         label: "Uso"
         opciones:
@@ -187,6 +266,8 @@ motores:
           - "YouTube"
           - "Presentación"
           - "Publicidad"
+          - "Educativo/Tutorial"
+          - "Corporativo"
       duracion:
         label: "Duración"
         opciones:
@@ -196,39 +277,89 @@ motores:
           - "3+min"
 
   archivos:
-    nombre: "📊 Programas/Archivos"
+    nombre: "📊 Documentos y Herramientas"
     herramientas:
-      - "Excel"
+      - "🌐 Genérico (cualquier programa)"
+      # --- Ofimática y Documentos ---
+      - "Microsoft Word"
       - "Google Docs"
-      - "Photoshop"
-      - "Blender"
+      - "Microsoft Excel"
+      - "Google Sheets"
+      - "Microsoft PowerPoint"
+      - "Google Slides"
+      - "Notion"
+      - "LibreOffice"
+      # --- Diseño e Infografías ---
+      - "Canva"
+      - "Figma"
+      - "Adobe Illustrator"
+      - "Adobe Photoshop"
+      - "Adobe InDesign"
+      # --- Mapas Conceptuales y Diagramas ---
+      - "Miro"
+      - "Lucidchart"
+      - "MindMeister"
+      - "Mermaid.js"
+      - "Draw.io (diagrams.net)"
+      - "XMind"
+      # --- Edición de Video/Audio ---
+      - "Adobe Premiere Pro"
+      - "Adobe After Effects"
+      - "DaVinci Resolve"
+      - "Logic Pro"
+      # --- Código y Desarrollo ---
       - "VS Code"
+      - "Python"
+      - "C++"
+      - "GitHub Copilot"
+      # --- 3D y Animación ---
+      - "Blender"
+      - "Cinema 4D"
+      - "Unity"
+      - "Unreal Engine"
+      - "AutoCAD"
     parametros:
-      programa:
-        label: "Programa"
+      categoria:
+        label: "Categoría"
         opciones:
-          - "Excel"
-          - "Docs"
-          - "Photoshop"
-          - "Blender"
-          - "VS Code"
+          - "📄 Documento/Plantilla"
+          - "📊 Hoja de cálculo"
+          - "📑 Presentación"
+          - "🗺️ Mapa conceptual/Diagrama"
+          - "📈 Infografía"
+          - "💻 Código Python"
+          - "💻 Código C++"
+          - "🎬 Proyecto audiovisual"
+          - "🎨 Diseño gráfico"
+          - "🧊 Modelado 3D"
       tipo:
         label: "Tipo de tarea"
         opciones:
-          - "Fórmula"
-          - "Script"
-          - "Plugin"
-          - "Template"
+          - "Crear desde cero"
+          - "Plantilla reutilizable"
+          - "Fórmula/Función"
+          - "Script/Automatización"
           - "Macro"
+          - "Plugin/Extensión"
+          - "Template con datos"
+          - "Diagrama de flujo"
+          - "Organigrama"
+          - "Timeline/Línea de tiempo"
       complejidad:
         label: "Complejidad"
         opciones:
           - "Simple"
           - "Intermedio"
           - "Avanzado"
+          - "Profesional/Enterprise"
       proposito:
         label: "Propósito"
         opciones:
-          - "Automatizar"
+          - "Automatizar proceso"
           - "Crear herramienta"
           - "Procesar datos"
+          - "Documentar/Reportar"
+          - "Visualizar información"
+          - "Enseñar/Capacitar"
+          - "Presentar a cliente"
+          - "Uso interno/Equipo"
