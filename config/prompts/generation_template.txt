@@ -1,32 +1,121 @@
 CREA UN PROMPT PROFESIONAL Y EXTENSO para: {herramienta}
 
-INFORMACIÓN DEL USUARIO:
-- Motor: {motor}
-- Idea/Concepto: {idea}
-- Parámetros técnicos: {parametros}
-- Idioma solicitado: {idioma}
+═══════════════════════════════════════════════════════════════
+[CONTEXTO Y ROL]
+═══════════════════════════════════════════════════════════════
+Eres un EXPERTO PROMPT ENGINEER con 10+ años de experiencia 
+creando prompts profesionales, específicos y altamente optimizados 
+para {herramienta}.
 
-INFORMACIÓN EXTRAÍDA DE DOCUMENTOS:
+Tu objetivo: Generar el MEJOR PROMPT POSIBLE que el usuario 
+pueda copiar-pegar directamente en {herramienta}.
+
+═══════════════════════════════════════════════════════════════
+[INSTRUCCIÓN PRINCIPAL CLARA]
+═══════════════════════════════════════════════════════════════
+Motor objetivo: {motor}
+Idea/Concepto: {idea}
+Herramienta: {herramienta}
+Idioma: {idioma}
+
+═══════════════════════════════════════════════════════════════
+[ESPECIFICACIONES TÉCNICAS DEL USUARIO]
+═══════════════════════════════════════════════════════════════
+Parámetros seleccionados:
+{parametros}
+
+═══════════════════════════════════════════════════════════════
+[🔑 PALABRAS CLAVE FUNDAMENTALES]
+═══════════════════════════════════════════════════════════════
+ESTAS PALABRAS SON CRÍTICAS - INCORPÓRALAS COMPLETAMENTE:
+{palabras_clave}
+
+Estas palabras deben permear todo el prompt. Úsalas estratégicamente
+en contexto, especificaciones, detalles visuales, y restricciones.
+
+═══════════════════════════════════════════════════════════════
+[INFORMACIÓN DE DOCUMENTOS DEL USUARIO]
+═══════════════════════════════════════════════════════════════
 {informacion_documentos}
 
+═══════════════════════════════════════════════════════════════
+[NOTAS ESPECIALES DEL USUARIO]
+═══════════════════════════════════════════════════════════════
 {notas_seccion}
 
-REQUISITOS PARA EL PROMPT GENERADO:
-✓ Mínimo 300-500 palabras
-✓ Altamente específico y detallado
-✓ Optimizado para: {herramienta}
-✓ Estructura profesional y clara
+═══════════════════════════════════════════════════════════════
+[ESTRUCTURA REQUERIDA PARA EL PROMPT FINAL]
+═══════════════════════════════════════════════════════════════
+El prompt que generes DEBE incluir:
+
+1. CONTEXTO Y ROL (1-2 líneas)
+   - Define el rol del experto/sistema
+   - Establece autoridad y expertise
+
+2. INSTRUCCIÓN PRINCIPAL (2-3 líneas)
+   - Qué crear exactamente
+   - Objetivo claro
+
+3. ESPECIFICACIONES TÉCNICAS (Párrafo)
+   - Todos los parámetros del usuario
+   - Incorpora las palabras clave
+   - Detalles específicos para {herramienta}
+
+4. DETALLES VISUALES / CONTEXTO (2-3 párrafos)
+   - Descripciones ricas y detalladas
+   - Incorpora palabras clave naturalmente
+   - Crea imagen mental clara
+
+5. RESTRICCIONES Y LIMITACIONES (Párrafo)
+   - Qué EVITAR completamente
+   - Limitaciones técnicas
+   - Estándares de calidad
+
+6. FORMATO ESPERADO (Párrafo)
+   - Cómo debe verse el resultado
+   - Especificaciones de formato
+   - Parámetros técnicos si aplica
+
+7. REQUISITOS DE CALIDAD (Párrafo)
+   - Nivel mínimo de detalle
+   - Estándares de profesionalismo
+   - Requisitos de impacto
+
+═══════════════════════════════════════════════════════════════
+[TÉCNICAS DE PROMPT ENGINEERING A USAR]
+═══════════════════════════════════════════════════════════════
+✓ Role-based: Asigna rol experto claro
+✓ Context-stacking: Proporciona contexto en capas progresivas
+✓ Specification: Sé ultra-específico en cada aspecto
+✓ Negative prompting: Di explícitamente qué EVITAR
+✓ Format-forcing: Especifica exactamente el formato
+✓ Few-shot: Incluye ejemplos o referencias
+✓ Chain-of-thought: Explicita el razonamiento
+✓ Keyword-emphasis: Enfatiza palabras clave estratégicamente
+
+═══════════════════════════════════════════════════════════════
+[REQUISITOS NO-NEGOCIABLES]
+═══════════════════════════════════════════════════════════════
+✓ Mínimo 400-600 palabras
+✓ Ultra-específico para {herramienta}
+✓ Incorpora COMPLETAMENTE las palabras clave: {palabras_clave}
+✓ Incorpora información de documentos del usuario
+✓ Usa técnicas avanzadas de prompt engineering
+✓ Estructura clara con secciones definidas
+✓ Lenguaje profesional y directo
 ✓ Listo para copiar-pegar directamente
-✓ INCORPORA COMPLETAMENTE la información de los documentos
-✓ Incluye detalles técnicos específicos para {herramienta}
+✓ Coherencia total con parámetros del usuario
+✓ Máximo impacto y resultados esperados
 
-ESTRUCTURA SUGERIDA PARA EL PROMPT:
-1. Instrucción principal clara
-2. Detalles y especificaciones técnicas (incluye datos de documentos)
-3. Estilo, mood, o características específicas
-4. Restricciones y limitaciones
-5. Formato esperado del resultado
-6. Ejemplos o referencias si son relevantes
+═══════════════════════════════════════════════════════════════
+[INSTRUCCIÓN FINAL]
+═══════════════════════════════════════════════════════════════
+GENERA AHORA EL PROMPT PROFESIONAL Y COMPLETO:
 
-GENERA AHORA EL PROMPT PROFESIONAL:
-(Responde SOLO con el prompt, sin explicaciones. Es decir, el usuario debe poder copiar-pegar tu respuesta directamente en {herramienta})
+Responde SOLO con el prompt final, sin explicaciones previas.
+El usuario debe poder copiar tu respuesta directamente a {herramienta}.
+No incluyas frases como "Aquí está el prompt:" o similares.
+Comienza directamente con el prompt.
+
+RECUERDA: Las palabras clave [{palabras_clave}] deben estar 
+integradas naturalmente en TODO el prompt para máximo impacto.
