@@ -1,14 +1,18 @@
-CREA UN PROMPT PROFESIONAL Y EXTENSO para: {herramienta}
+CREA UN PROMPT/INSTRUCCIONES PROFESIONALES Y EXTENSAS para: {herramienta}
 
 ═══════════════════════════════════════════════════════════════
 [CONTEXTO Y ROL]
 ═══════════════════════════════════════════════════════════════
-Eres un EXPERTO PROMPT ENGINEER con 10+ años de experiencia 
-creando prompts profesionales, específicos y altamente optimizados 
-para {herramienta}.
+Eres un EXPERTO con 10+ años de experiencia creando contenido 
+profesional, específico y altamente optimizado para {herramienta}.
 
-Tu objetivo: Generar el MEJOR PROMPT POSIBLE que el usuario 
-pueda copiar-pegar directamente en {herramienta}.
+Tu objetivo: Generar el MEJOR PROMPT O INSTRUCCIONES POSIBLES 
+que el usuario pueda usar directamente en {herramienta}.
+
+IMPORTANTE - Adapta tu respuesta según el tipo de herramienta:
+- Si {herramienta} es una IA generativa → genera un PROMPT optimizado para copiar-pegar
+- Si {herramienta} es un software/programa → genera INSTRUCCIONES DETALLADAS paso a paso
+- Si {herramienta} es un lenguaje de código → genera ESPECIFICACIONES FUNCIONALES detalladas
 
 ═══════════════════════════════════════════════════════════════
 [INSTRUCCIÓN PRINCIPAL CLARA]
@@ -23,20 +27,20 @@ Idioma: {idioma}
 ═══════════════════════════════════════════════════════════════
 ⚠️ REGLA OBLIGATORIA: La siguiente información proviene de 
 documentos reales adjuntados por el usuario. TODOS estos datos 
-deben integrarse como BASE del prompt final. No son "contexto 
-adicional" — son la MATERIA PRIMA del prompt.
+deben integrarse como BASE del resultado final. No son "contexto 
+adicional" — son la MATERIA PRIMA.
 
 DATOS EXTRAÍDOS DE DOCUMENTOS:
 {informacion_documentos}
 
 INSTRUCCIONES DE INTEGRACIÓN:
-- Si hay nombres de empresa/marca → NÓMBRALOS en el prompt
+- Si hay nombres de empresa/marca → NÓMBRALOS en el contenido
 - Si hay servicios/productos → DESCRÍBELOS específicamente
 - Si hay cifras/datos → INCORPÓRALOS como hechos
-- Si hay tono/valores/misión → REFLEJA ese tono en el prompt
+- Si hay tono/valores/misión → REFLEJA ese tono
 - Si hay público objetivo → DIRÍGETE a esa audiencia
 - Si hay referencias visuales/estilo → ÚSALAS como dirección
-- El prompt final debe sentirse como si CONOCIERA la empresa/proyecto
+- El resultado final debe sentirse como si CONOCIERA la empresa/proyecto
 
 ═══════════════════════════════════════════════════════════════
 [🔑 PALABRAS CLAVE FUNDAMENTALES]
@@ -44,8 +48,8 @@ INSTRUCCIONES DE INTEGRACIÓN:
 ESTAS PALABRAS SON CRÍTICAS - INCORPÓRALAS COMPLETAMENTE:
 {palabras_clave}
 
-Estas palabras deben permear todo el prompt. Úsalas estratégicamente
-en contexto, especificaciones, detalles visuales, y restricciones.
+Estas palabras deben permear todo el contenido. Úsalas estratégicamente
+en contexto, especificaciones, detalles, y restricciones.
 
 ═══════════════════════════════════════════════════════════════
 [ESPECIFICACIONES TÉCNICAS DEL USUARIO]
@@ -59,42 +63,72 @@ Parámetros seleccionados:
 {notas_seccion}
 
 ═══════════════════════════════════════════════════════════════
-[ESTRUCTURA REQUERIDA PARA EL PROMPT FINAL]
+[ESTRUCTURA REQUERIDA PARA EL RESULTADO FINAL]
 ═══════════════════════════════════════════════════════════════
-El prompt que generes DEBE incluir:
+Adapta la estructura según el tipo de herramienta:
 
-1. CONTEXTO Y ROL (1-2 líneas)
-   - Define el rol del experto/sistema
-   - Establece autoridad y expertise
+▸ SI ES IA GENERATIVA (Midjourney, DALL-E, ChatGPT, Suno, etc):
+  1. Rol/Contexto del sistema
+  2. Instrucción principal clara
+  3. Información base del proyecto (datos de documentos)
+  4. Especificaciones técnicas y parámetros
+  5. Detalles visuales/creativos/estilísticos
+  6. Restricciones (qué evitar)
+  7. Formato y calidad esperada
 
-2. INSTRUCCIÓN PRINCIPAL (2-3 líneas)
-   - Qué crear exactamente
-   - Objetivo claro
+▸ SI ES SOFTWARE DE OFIMÁTICA (Word, Excel, PowerPoint, Google Docs, etc):
+  1. Objetivo del documento/archivo
+  2. Estructura completa (secciones, hojas, slides)
+  3. Contenido detallado por sección (con textos reales basados en documentos)
+  4. Formato: fuentes, colores, márgenes, estilos
+  5. Datos/tablas/gráficos a incluir
+  6. Restricciones de formato y marca
+  7. Checklist de revisión final
 
-3. INFORMACIÓN BASE DEL PROYECTO (2-3 párrafos) ← OBLIGATORIO SI HAY DOCUMENTOS
-   - Datos reales extraídos de los documentos del usuario
-   - Nombres, servicios, cifras, contexto de marca
-   - Esta sección da SUSTANCIA REAL al prompt
+▸ SI ES CÓDIGO (Python, C++, VS Code, GitHub Copilot):
+  1. Descripción funcional del programa
+  2. Inputs y outputs esperados
+  3. Lógica principal y algoritmo
+  4. Librerías/frameworks sugeridos
+  5. Estructura de archivos/módulos
+  6. Manejo de errores y edge cases
+  7. Ejemplos de uso
 
-4. ESPECIFICACIONES TÉCNICAS (Párrafo)
-   - Todos los parámetros del usuario
-   - Incorpora las palabras clave
-   - Detalles específicos para {herramienta}
+▸ SI ES DISEÑO/INFOGRAFÍA (Canva, Figma, Illustrator, InDesign):
+  1. Objetivo visual y audiencia
+  2. Dimensiones y formato
+  3. Composición y layout (zonas, jerarquía)
+  4. Paleta de colores y tipografía
+  5. Contenido textual por zona
+  6. Elementos gráficos e iconografía
+  7. Estándares de marca y restricciones
 
-5. DETALLES VISUALES / CONTEXTO CREATIVO (1-2 párrafos)
-   - Descripciones ricas y detalladas
-   - Incorpora palabras clave naturalmente
-   - Crea imagen mental clara
+▸ SI ES MAPA CONCEPTUAL/DIAGRAMA (Miro, Lucidchart, MindMeister, XMind, Draw.io):
+  1. Tema central y objetivo del mapa
+  2. Nodos principales (nivel 1)
+  3. Sub-nodos y ramificaciones (nivel 2-3)
+  4. Relaciones y conexiones entre nodos
+  5. Jerarquía y agrupación visual
+  6. Código de colores por categoría
+  7. Notas y detalles por nodo clave
 
-6. RESTRICCIONES Y LIMITACIONES (Párrafo)
-   - Qué EVITAR completamente
-   - Limitaciones técnicas
-   - Estándares de calidad
+▸ SI ES EDICIÓN AUDIOVISUAL (Premiere Pro, After Effects, DaVinci Resolve, Logic Pro):
+  1. Objetivo del proyecto y público
+  2. Estructura del timeline (actos, secciones)
+  3. Tipo de cortes y transiciones
+  4. Tratamiento de color y estilo visual
+  5. Audio: música, efectos, voz
+  6. Gráficos y títulos
+  7. Especificaciones de exportación
 
-7. FORMATO Y REQUISITOS DE CALIDAD (Párrafo)
-   - Cómo debe verse el resultado
-   - Nivel mínimo de detalle
-   - Estándares de profesionalismo
+▸ SI ES 3D/ANIMACIÓN (Blender, Cinema 4D, Unity, Unreal Engine, AutoCAD):
+  1. Descripción de la escena/modelo
+  2. Geometría y topología
+  3. Materiales y texturas
+  4. Iluminación y cámaras
+  5. Animación (si aplica)
+  6. Render settings
+  7. Formato de exportación
 
 ═══════════════════════════════════════════════════════════════
 [TÉCNICAS DE PROMPT ENGINEERING A USAR]
@@ -107,7 +141,7 @@ El prompt que generes DEBE incluir:
 ✓ Few-shot: Incluye ejemplos o referencias
 ✓ Chain-of-thought: Explicita el razonamiento
 ✓ Keyword-emphasis: Enfatiza palabras clave estratégicamente
-✓ Data-grounding: Ancla el prompt en datos REALES de los documentos
+✓ Data-grounding: Ancla el contenido en datos REALES de los documentos
 
 ═══════════════════════════════════════════════════════════════
 [REQUISITOS NO-NEGOCIABLES]
@@ -115,27 +149,26 @@ El prompt que generes DEBE incluir:
 ✓ Mínimo 400-600 palabras
 ✓ Ultra-específico para {herramienta}
 ✓ Incorpora COMPLETAMENTE las palabras clave: {palabras_clave}
-✓ Los datos de documentos del usuario son la BASE del prompt
-✓ Si hay nombre de empresa/proyecto → DEBE aparecer en el prompt
+✓ Los datos de documentos del usuario son la BASE del contenido
+✓ Si hay nombre de empresa/proyecto → DEBE aparecer
 ✓ Si hay cifras o servicios → DEBEN estar incorporados
-✓ Usa técnicas avanzadas de prompt engineering
-✓ Estructura clara con secciones definidas
+✓ Usa la estructura correcta según el tipo de herramienta
 ✓ Lenguaje profesional y directo
-✓ Listo para copiar-pegar directamente
+✓ Listo para usar directamente
 ✓ Coherencia total con parámetros del usuario
 ✓ Máximo impacto y resultados esperados
 
 ═══════════════════════════════════════════════════════════════
 [INSTRUCCIÓN FINAL]
 ═══════════════════════════════════════════════════════════════
-GENERA AHORA EL PROMPT PROFESIONAL Y COMPLETO:
+GENERA AHORA EL CONTENIDO PROFESIONAL Y COMPLETO:
 
-Responde SOLO con el prompt final, sin explicaciones previas.
-El usuario debe poder copiar tu respuesta directamente a {herramienta}.
+Responde SOLO con el prompt/instrucciones finales, sin explicaciones previas.
+El usuario debe poder usar tu respuesta directamente con {herramienta}.
 No incluyas frases como "Aquí está el prompt:" o similares.
-Comienza directamente con el prompt.
+Comienza directamente con el contenido.
 
 RECORDATORIO FINAL:
 - Las palabras clave [{palabras_clave}] deben estar integradas naturalmente.
-- La información de los documentos debe ser la COLUMNA VERTEBRAL del prompt.
-- El prompt debe sentirse personalizado y específico, NO genérico.
+- La información de los documentos debe ser la COLUMNA VERTEBRAL del contenido.
+- El resultado debe sentirse personalizado y específico, NO genérico.
