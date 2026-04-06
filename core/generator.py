@@ -1,5 +1,5 @@
 """
-generator.py - Motor de generación de prompts con ChatGPT
+generator.py - Motor de generación de prompts con ChatGPT (v3.2.1 - Docs mejorados)
 """
 
 import time
@@ -80,16 +80,18 @@ PROMPT POSIBLE que el usuario pueda copiar-pegar directamente."""
         return """CREA UN PROMPT PROFESIONAL para: {herramienta}
 INFORMACIÓN: {idea}
 PARÁMETROS: {parametros}
+DOCUMENTOS: {informacion_documentos}
 Genera un prompt completo y optimizado."""
 
-    def procesar_documentos(self, texto_documentos: str, motor: str, herramienta: str) -> str:
+    def procesar_documentos(self, texto_documentos: str, motor: str, herramienta: str, idea: str) -> str:
         """
-        Procesa documentos con ChatGPT para extraer información clave
+        Procesa documentos con ChatGPT para extraer información ACCIONABLE
         
         Args:
             texto_documentos: Texto combinado de documentos
             motor: Motor objetivo (Imagen, Texto, etc.)
             herramienta: Herramienta específica
+            idea: Idea del usuario (para contextualizar la extracción)
             
         Returns:
             Información procesada extraída de documentos
@@ -98,29 +100,63 @@ Genera un prompt completo y optimizado."""
             return "No hay documentos adjuntos."
 
         try:
-            prompt_analisis = f"""Analiza estos documentos y extrae información clave RELEVANTE 
-para crear un prompt profesional para {herramienta} en la categoría de {motor}.
+            prompt_analisis = f"""Eres un analista experto. El usuario quiere crear un prompt para {herramienta} ({motor}).
+Su idea es: "{idea}"
 
-Extrae y estructura:
-- Datos técnicos importantes
-- Estilos, tonos o características específicas mencionadas
-- Restricciones o limitaciones
-- Referencias, ejemplos o benchmarks
-- Cualquier especificación relevante
+Ha adjuntado documentos con información REAL de su proyecto/empresa.
+Tu tarea: extraer TODOS los datos concretos y accionables que sirvan para personalizar el prompt.
+
+EXTRAE OBLIGATORIAMENTE (si existen en el documento):
+
+📌 IDENTIDAD:
+- Nombre de empresa/marca/proyecto
+- Slogan, tagline o frase clave
+- Misión, visión, valores
+- Año de fundación, ubicación
+
+📌 OFERTA:
+- Productos o servicios específicos (lista completa)
+- Público objetivo / cliente ideal
+- Diferenciadores / propuesta de valor única
+- Precios, planes o paquetes (si aplica)
+
+📌 ESTILO Y TONO:
+- Tono de comunicación (formal, cercano, técnico, etc.)
+- Colores de marca, tipografías, estilo visual
+- Personalidad de marca
+- Referencias o ejemplos de estilo
+
+📌 DATOS DUROS:
+- Cifras relevantes (ventas, usuarios, años, porcentajes)
+- Logros, premios, certificaciones
+- Estadísticas o métricas importantes
+- Casos de éxito o testimonios
+
+📌 CONTEXTO:
+- Industria o sector
+- Competidores mencionados
+- Situación actual o problema a resolver
+- Objetivos específicos del proyecto
 
 DOCUMENTOS:
-{texto_documentos[:30000]}
+{texto_documentos[:40000]}
 
-Responde de forma estructurada con SOLO los puntos clave, listos para incorporar en un prompt."""
+INSTRUCCIONES:
+- Extrae DATOS CONCRETOS, no generalidades
+- Si el documento dice "Empresa XYZ ofrece consultoría en transformación digital", escribe exactamente eso
+- NO inventes información que no esté en los documentos
+- Si una categoría no tiene datos, omítela
+- Prioriza lo que sea más útil para crear el prompt de {herramienta}
+- Sé EXHAUSTIVO: cada nombre, cifra y dato cuenta"""
 
             response = self.cliente.chat.completions.create(
                 model="gpt-4o-mini",
                 messages=[
-                    {"role": "system", "content": "Eres un analizador de documentos experto. Extrae información clave de forma estructurada."},
+                    {"role": "system", "content": "Eres un analista de documentos. Extraes información concreta, específica y accionable. Nunca inventas datos. Siempre nombras las cosas por su nombre real."},
                     {"role": "user", "content": prompt_analisis},
                 ],
-                temperature=0.7,
-                max_tokens=2000,
+                temperature=0.3,
+                max_tokens=3000,
             )
 
             return response.choices[0].message.content
@@ -140,6 +176,7 @@ Responde de forma estructurada con SOLO los puntos clave, listos para incorporar
                 - documentos: Texto de documentos adjuntos
                 - notas: Notas adicionales
                 - idioma: Idioma solicitado
+                - palabras_clave: Palabras clave seleccionadas
                 
         Returns:
             Dict con:
@@ -171,31 +208,32 @@ Responde de forma estructurada con SOLO los puntos clave, listos para incorporar
             info_documentos = ""
 
             if texto_documentos.strip():
-                st.info("📄 Procesando documentos con ChatGPT...")
+                st.info("📄 Analizando documentos: extrayendo nombres, servicios, cifras y contexto...")
                 info_documentos = self.procesar_documentos(
                     texto_documentos,
                     datos["motor"],
                     datos["herramienta"],
+                    datos["idea"],
                 )
                 resultado["info_documentos"] = info_documentos
-                st.success("✅ Documentos procesados")
+                st.success("✅ Documentos analizados: información clave extraída")
 
             else:
-                info_documentos = "No hay documentos adjuntos. Se creará el prompt basado en la idea y parámetros."
+                info_documentos = "No hay documentos adjuntos. Genera el prompt basándote en la idea, parámetros y palabras clave del usuario."
 
             # PASO 2: Preparar parámetros
             params_texto = "\n".join(
                 [f"  • {k.replace('_', ' ').title()}: {v}" for k, v in datos.get("parametros", {}).items()]
             )
 
-            # PASO 3: Preparar palabras clave (NUEVO)
+            # PASO 3: Preparar palabras clave
             palabras_clave = datos.get("palabras_clave", "")
             if not palabras_clave:
                 palabras_clave = "No se especificaron palabras clave"
 
             # PASO 4: Preparar notas
             notas = datos.get("notas", "")
-            notas_seccion = f"- NOTAS ADICIONALES DEL USUARIO:\n{notas}\n" if notas else ""
+            notas_seccion = f"NOTAS ADICIONALES DEL USUARIO:\n{notas}\n" if notas else "Sin notas adicionales."
 
             # PASO 5: Construir prompt para generar el PROMPT final
             prompt_usuario = self.template_generacion.format(
@@ -209,8 +247,8 @@ Responde de forma estructurada con SOLO los puntos clave, listos para incorporar
                 idioma=datos.get("idioma", "Español"),
             )
 
-            # PASO 5: Llamar a ChatGPT para generar el PROMPT final
-            st.info("✨ Generando prompt profesional...")
+            # PASO 6: Llamar a ChatGPT para generar el PROMPT final
+            st.info("✨ Generando prompt profesional con toda la información integrada...")
             response = self.cliente.chat.completions.create(
                 model="gpt-4o-mini",
                 messages=[
