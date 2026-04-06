@@ -19,10 +19,24 @@ Herramienta: {herramienta}
 Idioma: {idioma}
 
 ═══════════════════════════════════════════════════════════════
-[ESPECIFICACIONES TÉCNICAS DEL USUARIO]
+[📌 INFORMACIÓN DE DOCUMENTOS - INSUMO PRINCIPAL]
 ═══════════════════════════════════════════════════════════════
-Parámetros seleccionados:
-{parametros}
+⚠️ REGLA OBLIGATORIA: La siguiente información proviene de 
+documentos reales adjuntados por el usuario. TODOS estos datos 
+deben integrarse como BASE del prompt final. No son "contexto 
+adicional" — son la MATERIA PRIMA del prompt.
+
+DATOS EXTRAÍDOS DE DOCUMENTOS:
+{informacion_documentos}
+
+INSTRUCCIONES DE INTEGRACIÓN:
+- Si hay nombres de empresa/marca → NÓMBRALOS en el prompt
+- Si hay servicios/productos → DESCRÍBELOS específicamente
+- Si hay cifras/datos → INCORPÓRALOS como hechos
+- Si hay tono/valores/misión → REFLEJA ese tono en el prompt
+- Si hay público objetivo → DIRÍGETE a esa audiencia
+- Si hay referencias visuales/estilo → ÚSALAS como dirección
+- El prompt final debe sentirse como si CONOCIERA la empresa/proyecto
 
 ═══════════════════════════════════════════════════════════════
 [🔑 PALABRAS CLAVE FUNDAMENTALES]
@@ -34,9 +48,10 @@ Estas palabras deben permear todo el prompt. Úsalas estratégicamente
 en contexto, especificaciones, detalles visuales, y restricciones.
 
 ═══════════════════════════════════════════════════════════════
-[INFORMACIÓN DE DOCUMENTOS DEL USUARIO]
+[ESPECIFICACIONES TÉCNICAS DEL USUARIO]
 ═══════════════════════════════════════════════════════════════
-{informacion_documentos}
+Parámetros seleccionados:
+{parametros}
 
 ═══════════════════════════════════════════════════════════════
 [NOTAS ESPECIALES DEL USUARIO]
@@ -56,30 +71,30 @@ El prompt que generes DEBE incluir:
    - Qué crear exactamente
    - Objetivo claro
 
-3. ESPECIFICACIONES TÉCNICAS (Párrafo)
+3. INFORMACIÓN BASE DEL PROYECTO (2-3 párrafos) ← OBLIGATORIO SI HAY DOCUMENTOS
+   - Datos reales extraídos de los documentos del usuario
+   - Nombres, servicios, cifras, contexto de marca
+   - Esta sección da SUSTANCIA REAL al prompt
+
+4. ESPECIFICACIONES TÉCNICAS (Párrafo)
    - Todos los parámetros del usuario
    - Incorpora las palabras clave
    - Detalles específicos para {herramienta}
 
-4. DETALLES VISUALES / CONTEXTO (2-3 párrafos)
+5. DETALLES VISUALES / CONTEXTO CREATIVO (1-2 párrafos)
    - Descripciones ricas y detalladas
    - Incorpora palabras clave naturalmente
    - Crea imagen mental clara
 
-5. RESTRICCIONES Y LIMITACIONES (Párrafo)
+6. RESTRICCIONES Y LIMITACIONES (Párrafo)
    - Qué EVITAR completamente
    - Limitaciones técnicas
    - Estándares de calidad
 
-6. FORMATO ESPERADO (Párrafo)
+7. FORMATO Y REQUISITOS DE CALIDAD (Párrafo)
    - Cómo debe verse el resultado
-   - Especificaciones de formato
-   - Parámetros técnicos si aplica
-
-7. REQUISITOS DE CALIDAD (Párrafo)
    - Nivel mínimo de detalle
    - Estándares de profesionalismo
-   - Requisitos de impacto
 
 ═══════════════════════════════════════════════════════════════
 [TÉCNICAS DE PROMPT ENGINEERING A USAR]
@@ -92,6 +107,7 @@ El prompt que generes DEBE incluir:
 ✓ Few-shot: Incluye ejemplos o referencias
 ✓ Chain-of-thought: Explicita el razonamiento
 ✓ Keyword-emphasis: Enfatiza palabras clave estratégicamente
+✓ Data-grounding: Ancla el prompt en datos REALES de los documentos
 
 ═══════════════════════════════════════════════════════════════
 [REQUISITOS NO-NEGOCIABLES]
@@ -99,7 +115,9 @@ El prompt que generes DEBE incluir:
 ✓ Mínimo 400-600 palabras
 ✓ Ultra-específico para {herramienta}
 ✓ Incorpora COMPLETAMENTE las palabras clave: {palabras_clave}
-✓ Incorpora información de documentos del usuario
+✓ Los datos de documentos del usuario son la BASE del prompt
+✓ Si hay nombre de empresa/proyecto → DEBE aparecer en el prompt
+✓ Si hay cifras o servicios → DEBEN estar incorporados
 ✓ Usa técnicas avanzadas de prompt engineering
 ✓ Estructura clara con secciones definidas
 ✓ Lenguaje profesional y directo
@@ -117,5 +135,7 @@ El usuario debe poder copiar tu respuesta directamente a {herramienta}.
 No incluyas frases como "Aquí está el prompt:" o similares.
 Comienza directamente con el prompt.
 
-RECUERDA: Las palabras clave [{palabras_clave}] deben estar 
-integradas naturalmente en TODO el prompt para máximo impacto.
+RECORDATORIO FINAL:
+- Las palabras clave [{palabras_clave}] deben estar integradas naturalmente.
+- La información de los documentos debe ser la COLUMNA VERTEBRAL del prompt.
+- El prompt debe sentirse personalizado y específico, NO genérico.
