@@ -84,11 +84,31 @@ def _inicializar_session_state() -> None:
     if "rate_limiter" not in st.session_state:
         st.session_state.rate_limiter = SessionRateLimiter(limite_por_sesion=30)
 
+    if "resetear_wizard" not in st.session_state:
+        st.session_state.resetear_wizard = False
+
 
 def mostrar_wizard_streamlit() -> None:
     """Función principal que renderiza el wizard de 5 pasos"""
 
     _inicializar_session_state()
+    
+    # Verificar si necesita resetear
+    if st.session_state.resetear_wizard:
+        st.session_state.paso_wizard = 1
+        st.session_state.datos_wizard = {
+            "motor": None,
+            "motor_key": None,
+            "herramienta": None,
+            "idea": "",
+            "parametros": {},
+            "palabras_clave": "",
+            "documentos": "",
+            "notas": "",
+            "idioma": "Español",
+        }
+        st.session_state.resetear_wizard = False
+    
     motores = _cargar_motores()
     rate_limiter = st.session_state.rate_limiter
 
@@ -391,22 +411,8 @@ def _paso_5_resultado(rate_limiter: SessionRateLimiter) -> None:
 
                 # 🆕 BOTÓN INICIAR NUEVO PROMPT
                 st.markdown("---")
-                if st.button("🔄 INICIAR NUEVO PROMPT", use_container_width=True, type="secondary", key="btn_nuevo_prompt"):
-                    # Limpiar datos ANTES de cambiar paso
-                    st.session_state.datos_wizard = {
-                        "motor": None,
-                        "motor_key": None,
-                        "herramienta": None,
-                        "idea": "",
-                        "parametros": {},
-                        "palabras_clave": "",
-                        "documentos": "",
-                        "notas": "",
-                        "idioma": "Español",
-                    }
-                    # Cambiar paso DESPUÉS
-                    st.session_state.paso_wizard = 1
-                    # Rerun
+                if st.button("🔄 INICIAR NUEVO PROMPT", use_container_width=True, type="secondary", key="btn_nuevo_prompt_final"):
+                    st.session_state.resetear_wizard = True
                     st.rerun()
 
             else:
