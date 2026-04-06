@@ -188,16 +188,22 @@ Responde de forma estructurada con SOLO los puntos clave, listos para incorporar
                 [f"  • {k.replace('_', ' ').title()}: {v}" for k, v in datos.get("parametros", {}).items()]
             )
 
-            # PASO 3: Preparar notas
+            # PASO 3: Preparar palabras clave (NUEVO)
+            palabras_clave = datos.get("palabras_clave", "")
+            if not palabras_clave:
+                palabras_clave = "No se especificaron palabras clave"
+
+            # PASO 4: Preparar notas
             notas = datos.get("notas", "")
             notas_seccion = f"- NOTAS ADICIONALES DEL USUARIO:\n{notas}\n" if notas else ""
 
-            # PASO 4: Construir prompt para generar el PROMPT final
+            # PASO 5: Construir prompt para generar el PROMPT final
             prompt_usuario = self.template_generacion.format(
                 herramienta=datos["herramienta"],
                 motor=datos["motor"],
                 idea=datos["idea"],
                 parametros=params_texto,
+                palabras_clave=palabras_clave,
                 informacion_documentos=info_documentos,
                 notas_seccion=notas_seccion,
                 idioma=datos.get("idioma", "Español"),
