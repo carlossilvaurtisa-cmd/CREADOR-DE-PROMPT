@@ -1,0 +1,234 @@
+motores:
+  imagen:
+    nombre: "🖼️ Generación de Imágenes"
+    herramientas:
+      - "DALL-E 3"
+      - "Midjourney v6"
+      - "Stable Diffusion XL"
+      - "Ideogram"
+      - "Leonardo.AI"
+    parametros:
+      estilo:
+        label: "Estilo visual"
+        opciones:
+          - "Realista fotográfico"
+          - "Ilustración digital"
+          - "Anime/Manga"
+          - "3D CGI"
+          - "Pintura óleo"
+          - "Abstracto"
+      mood:
+        label: "Mood/Atmósfera"
+        opciones:
+          - "Alegre/Positivo"
+          - "Oscuro/Dramático"
+          - "Neutral/Profesional"
+          - "Épico/Heroico"
+          - "Melancólico"
+          - "Futurista"
+      resolucion:
+        label: "Resolución"
+        opciones:
+          - "1024x1024"
+          - "1920x1080"
+          - "1080x1920"
+          - "768x1024"
+          - "4K+"
+      detalles:
+        label: "Nivel de detalle"
+        opciones:
+          - "Minimalista"
+          - "Moderado"
+          - "Hyper-detallado"
+
+  texto:
+    nombre: "📝 Generación de Texto"
+    herramientas:
+      - "ChatGPT"
+      - "Claude"
+      - "Gemini"
+      - "Perplexity"
+      - "Llama"
+    parametros:
+      tipo:
+        label: "Tipo de contenido"
+        opciones:
+          - "Artículo/Blog"
+          - "Email"
+          - "Comunicado"
+          - "Guion"
+          - "Código"
+          - "Análisis"
+      tono:
+        label: "Tono"
+        opciones:
+          - "Formal"
+          - "Casual"
+          - "Creativo"
+          - "Técnico"
+          - "Humorístico"
+      largo:
+        label: "Largo del contenido"
+        opciones:
+          - "Corto (200-500 palabras)"
+          - "Medio (500-1500 palabras)"
+          - "Largo (1500+ palabras)"
+      estructura:
+        label: "Estructura"
+        opciones:
+          - "Narrativa"
+          - "Bullet points"
+          - "Q&A"
+          - "Paso-a-paso"
+
+  musica:
+    nombre: "🎵 Generación de Música"
+    herramientas:
+      - "Suno AI"
+      - "MusicLM"
+      - "Jukebox"
+      - "Soundraw"
+      - "AIVA"
+    parametros:
+      genero:
+        label: "Género musical"
+        opciones:
+          - "Pop"
+          - "Rock"
+          - "Hip-hop"
+          - "Electronic"
+          - "Jazz"
+          - "Clásica"
+      mood:
+        label: "Mood"
+        opciones:
+          - "Energético"
+          - "Relajante"
+          - "Melancólico"
+          - "Alegre"
+          - "Épico"
+      duracion:
+        label: "Duración"
+        opciones:
+          - "Corta (15-30s)"
+          - "Media (30s-2m)"
+          - "Larga (2-5m)"
+      uso:
+        label: "Uso"
+        opciones:
+          - "Background"
+          - "Canción completa"
+          - "Loop"
+          - "Para video"
+
+  audio:
+    nombre: "🎙️ Audio/Voz"
+    herramientas:
+      - "ElevenLabs"
+      - "Google NotebookLM"
+      - "Vall-E"
+      - "Tortoise TTS"
+    parametros:
+      tipo:
+        label: "Tipo de audio"
+        opciones:
+          - "Narración"
+          - "Podcast"
+          - "Diálogo"
+          - "Locución"
+          - "Asistente"
+      voz:
+        label: "Tipo de voz"
+        opciones:
+          - "Masculina"
+          - "Femenina"
+          - "Neutral"
+          - "Infantil"
+      velocidad:
+        label: "Velocidad"
+        opciones:
+          - "Lenta"
+          - "Normal"
+          - "Rápida"
+      tono:
+        label: "Tono"
+        opciones:
+          - "Formal"
+          - "Amigable"
+          - "Entusiasta"
+          - "Dramático"
+
+  video:
+    nombre: "🎬 Generación de Video"
+    herramientas:
+      - "Runway Gen-3"
+      - "Pika Labs"
+      - "Synthesia"
+      - "HeyGen"
+    parametros:
+      tipo:
+        label: "Tipo de video"
+        opciones:
+          - "Video corto"
+          - "Video medio"
+          - "Animación 2D"
+          - "Avatar"
+      estilo:
+        label: "Estilo"
+        opciones:
+          - "Realista"
+          - "Animado"
+          - "Mixto"
+          - "Película"
+      uso:
+        label: "Uso"
+        opciones:
+          - "Social media"
+          - "YouTube"
+          - "Presentación"
+          - "Publicidad"
+      duracion:
+        label: "Duración"
+        opciones:
+          - "5-15s"
+          - "15-60s"
+          - "1-3min"
+          - "3+min"
+
+  archivos:
+    nombre: "📊 Programas/Archivos"
+    herramientas:
+      - "Excel"
+      - "Google Docs"
+      - "Photoshop"
+      - "Blender"
+      - "VS Code"
+    parametros:
+      programa:
+        label: "Programa"
+        opciones:
+          - "Excel"
+          - "Docs"
+          - "Photoshop"
+          - "Blender"
+          - "VS Code"
+      tipo:
+        label: "Tipo de tarea"
+        opciones:
+          - "Fórmula"
+          - "Script"
+          - "Plugin"
+          - "Template"
+          - "Macro"
+      complejidad:
+        label: "Complejidad"
+        opciones:
+          - "Simple"
+          - "Intermedio"
+          - "Avanzado"
+      proposito:
+        label: "Propósito"
+        opciones:
+          - "Automatizar"
+          - "Crear herramienta"
+          - "Procesar datos"
