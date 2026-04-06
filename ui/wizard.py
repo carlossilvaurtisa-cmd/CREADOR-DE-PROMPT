@@ -1,5 +1,5 @@
 """
-wizard.py - Interfaz de usuario del wizard de 5 pasos (v3.2.1 - Fix reinicio + docs)
+wizard.py - Interfaz de usuario del wizard de 5 pasos (v3.3 - Manual de marca + Refinamiento)
 """
 
 import os
@@ -51,9 +51,13 @@ def _cargar_tags() -> Dict:
     }
 
 
+def _es_separador(texto: str) -> bool:
+    """Detecta si un item de herramientas es un separador visual"""
+    return texto.startswith("──")
+
+
 def _limpiar_wizard() -> None:
     """Limpia completamente el wizard incluyendo keys de widgets"""
-    # Resetear paso y datos
     st.session_state.paso_wizard = 1
     st.session_state.datos_wizard = {
         "motor": None,
@@ -63,18 +67,21 @@ def _limpiar_wizard() -> None:
         "parametros": {},
         "palabras_clave": "",
         "documentos": "",
+        "manual_marca": "",
         "notas": "",
         "idioma": "Español",
     }
 
-    # Limpiar resultado guardado
-    if "ultimo_resultado" in st.session_state:
-        del st.session_state["ultimo_resultado"]
+    # Limpiar resultado y refinamiento
+    for key in ["ultimo_resultado", "modo_refinamiento", "historial_refinamiento"]:
+        if key in st.session_state:
+            del st.session_state[key]
 
-    # Limpiar TODAS las keys de widgets para evitar conflicto
+    # Limpiar TODAS las keys de widgets
     keys_a_limpiar = [k for k in st.session_state.keys() if k.startswith((
         "tag_", "param_", "input_", "select_", "wizard_files",
         "wizard_api_key", "select_herramienta", "select_idioma",
+        "wizard_brand_", "refine_",
     ))]
     for key in keys_a_limpiar:
         del st.session_state[key]
@@ -94,6 +101,7 @@ def _inicializar_session_state() -> None:
             "parametros": {},
             "palabras_clave": "",
             "documentos": "",
+            "manual_marca": "",
             "notas": "",
             "idioma": "Español",
         }
@@ -142,11 +150,6 @@ def _paso_1_motor_objetivo(motores: Dict) -> None:
                 st.rerun()
 
 
-def _es_separador(texto: str) -> bool:
-    """Detecta si un item de herramientas es un separador visual"""
-    return texto.startswith("──")
-
-
 def _paso_2_herramienta(motores: Dict) -> None:
     """Paso 2: Seleccionar herramienta específica"""
     motor_key = st.session_state.datos_wizard.get("motor_key")
@@ -161,7 +164,6 @@ def _paso_2_herramienta(motores: Dict) -> None:
         key="select_herramienta",
     )
 
-    # Validar que no sea un separador
     es_sep = _es_separador(herramienta)
     if es_sep:
         st.warning("⬆️ Esa es una categoría, selecciona una herramienta de la lista.")
@@ -212,7 +214,7 @@ def _paso_3_idea() -> None:
 
 
 def _paso_4_parametros_documentos(motores: Dict) -> None:
-    """Paso 4: Parámetros, palabras clave y documentos"""
+    """Paso 4: Parámetros, palabras clave, manual de marca y documentos"""
     motor_key = st.session_state.datos_wizard.get("motor_key")
     motor_info = motores[motor_key]
 
@@ -234,6 +236,32 @@ def _paso_4_parametros_documentos(motores: Dict) -> None:
         parametros[param_key] = valor
 
     st.session_state.datos_wizard["parametros"] = parametros
+
+    # ===== MANUAL DE MARCA =====
+    st.markdown("---")
+    st.markdown("### 🎨 Manual de Marca (Opcional)")
+    st.info("Si adjuntas un manual de marca, se usará como **guía de estilo obligatoria**: colores, tipografías, tono de voz, logo y personalidad de marca se integrarán en el prompt final.")
+
+    archivo_marca = st.file_uploader(
+        "Sube el manual de marca:",
+        accept_multiple_files=False,
+        type=["pdf", "docx", "txt", "png", "jpg", "jpeg"],
+        key="wizard_brand_file",
+    )
+
+    texto_marca = ""
+    if archivo_marca:
+        st.success(f"✅ Manual de marca: {archivo_marca.name}")
+        api_key = os.getenv("OPENAI_API_KEY")
+        if api_key:
+            from openai import OpenAI
+            cliente = OpenAI(api_key=api_key)
+            processor = DocumentProcessor(cliente_openai=cliente)
+        else:
+            processor = DocumentProcessor()
+        texto_marca = processor.procesar_archivos([archivo_marca])
+
+    st.session_state.datos_wizard["manual_marca"] = texto_marca
 
     # ===== PALABRAS CLAVE =====
     st.markdown("---")
@@ -285,7 +313,6 @@ def _paso_4_parametros_documentos(motores: Dict) -> None:
     texto_docs = ""
     if archivos:
         st.success(f"✅ {len(archivos)} archivo(s) - Serán procesados con ChatGPT")
-        # Obtener API key para el procesador
         api_key = os.getenv("OPENAI_API_KEY")
         if api_key:
             from openai import OpenAI
@@ -332,9 +359,8 @@ def _paso_4_parametros_documentos(motores: Dict) -> None:
 
 
 def _paso_5_resultado(rate_limiter: SessionRateLimiter) -> None:
-    """Paso 5: Mostrar resultado y generar prompt"""
+    """Paso 5: Mostrar resultado, evaluar y refinar prompt"""
     st.markdown("## Paso 5: Tu Prompt Profesional")
-    st.markdown("Copia-pega este prompt en tu herramienta de IA")
 
     rate_limiter.mostrar_widget_streamlit()
 
@@ -357,94 +383,199 @@ def _paso_5_resultado(rate_limiter: SessionRateLimiter) -> None:
     else:
         st.info("🔐 Usando API key centralizada de GIRO")
 
-    # ===== GENERAR PROMPT (guarda resultado en session_state) =====
-    if st.button("🚀 Generar Prompt (con análisis de documentos)", use_container_width=True, type="primary"):
-        if not api_key:
-            st.error("API key no disponible. Contacta al administrador.")
-        else:
-            with st.spinner("Analizando documentos, palabras clave e integrando para máxima calidad..."):
-                gen = PromptGenerator(api_key)
-                resultado = gen.generar(st.session_state.datos_wizard)
+    # ===== GENERAR PROMPT (primera vez) =====
+    if "ultimo_resultado" not in st.session_state:
+        if st.button("🚀 Generar Prompt (con análisis de documentos)", use_container_width=True, type="primary"):
+            if not api_key:
+                st.error("API key no disponible. Contacta al administrador.")
+            else:
+                with st.spinner("Analizando documentos, manual de marca e integrando para máxima calidad..."):
+                    gen = PromptGenerator(api_key)
+                    resultado = gen.generar(st.session_state.datos_wizard)
 
-            # Guardar resultado en session_state para que persista
-            st.session_state.ultimo_resultado = resultado
+                st.session_state.ultimo_resultado = resultado
+                st.session_state.historial_refinamiento = []
 
-            if resultado["exito"]:
-                rate_limiter.incrementar()
+                if resultado["exito"]:
+                    rate_limiter.incrementar()
 
-            # Rerun para mostrar resultado desde session_state
-            st.rerun()
+                st.rerun()
+        return
 
-    # ===== MOSTRAR RESULTADO (desde session_state, independiente del botón) =====
-    if "ultimo_resultado" in st.session_state:
-        resultado = st.session_state.ultimo_resultado
+    # ===== MOSTRAR RESULTADO =====
+    resultado = st.session_state.ultimo_resultado
 
-        if resultado["exito"]:
-            st.success("✅ Prompt generado exitosamente")
+    if not resultado["exito"]:
+        st.error(f"❌ Error: {resultado['error']}")
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("← Volver a editar", use_container_width=True):
+                del st.session_state["ultimo_resultado"]
+                st.session_state.paso_wizard = 4
+                st.rerun()
+        with col2:
+            if st.button("🔄 INICIAR NUEVO PROMPT", use_container_width=True):
+                _limpiar_wizard()
+                st.rerun()
+        return
 
-            if resultado["info_documentos"]:
-                with st.expander("📊 Información extraída de documentos"):
-                    st.markdown(resultado["info_documentos"])
+    # --- Resultado exitoso ---
+    st.success("✅ Prompt generado exitosamente")
 
-            palabras = st.session_state.datos_wizard.get("palabras_clave", "")
-            if palabras:
-                with st.expander("🔑 Palabras clave incorporadas"):
-                    st.markdown(f"**{palabras}**")
+    # Mostrar info de documentos y marca
+    if resultado.get("info_documentos"):
+        with st.expander("📊 Información extraída de documentos"):
+            st.markdown(resultado["info_documentos"])
 
-            col_costo, col_tiempo = st.columns(2)
-            with col_costo:
-                st.metric("Costo est.", f"${resultado['costo']:.4f}")
-            with col_tiempo:
-                st.metric("Tiempo", f"{resultado['tiempo']:.1f}s")
+    if resultado.get("info_marca"):
+        with st.expander("🎨 Manual de marca aplicado"):
+            st.markdown(resultado["info_marca"])
 
-            st.markdown("### 📋 Tu Prompt (listo para copiar-pegar)")
-            st.markdown("---")
-            st.code(resultado["prompt"], language="text")
-            st.markdown("---")
+    palabras = st.session_state.datos_wizard.get("palabras_clave", "")
+    if palabras:
+        with st.expander("🔑 Palabras clave incorporadas"):
+            st.markdown(f"**{palabras}**")
 
-            col_copy, col_download = st.columns(2)
-            with col_copy:
-                if st.button("📋 Copiar al portapapeles", use_container_width=True):
-                    st.info("✅ Selecciona todo (Ctrl+A) y copia (Ctrl+C)")
+    # Historial de refinamientos
+    historial = st.session_state.get("historial_refinamiento", [])
+    if historial:
+        with st.expander(f"🔄 Historial de mejoras ({len(historial)} refinamiento(s))"):
+            for i, ref in enumerate(historial, 1):
+                st.markdown(f"**Mejora {i}:** {ref}")
 
-            with col_download:
-                st.download_button(
-                    label="⬇️ Descargar como TXT",
-                    data=resultado["prompt"],
-                    file_name=f"prompt_{int(__import__('time').time())}.txt",
-                    mime="text/plain",
-                    use_container_width=True,
-                )
+    col_costo, col_tiempo = st.columns(2)
+    with col_costo:
+        st.metric("Costo est.", f"${resultado['costo']:.4f}")
+    with col_tiempo:
+        st.metric("Tiempo", f"{resultado['tiempo']:.1f}s")
 
-            st.markdown("---")
+    st.markdown("### 📋 Tu Prompt")
+    st.markdown("---")
+    st.code(resultado["prompt"], language="text")
+    st.markdown("---")
 
+    col_copy, col_download = st.columns(2)
+    with col_copy:
+        if st.button("📋 Copiar al portapapeles", use_container_width=True):
+            st.info("✅ Selecciona todo (Ctrl+A) y copia (Ctrl+C)")
+
+    with col_download:
+        st.download_button(
+            label="⬇️ Descargar como TXT",
+            data=resultado["prompt"],
+            file_name=f"prompt_{int(__import__('time').time())}.txt",
+            mime="text/plain",
+            use_container_width=True,
+        )
+
+    # ===== EVALUACIÓN Y REFINAMIENTO =====
+    st.markdown("---")
+    st.markdown("### 🔍 ¿Cómo quedó tu prompt?")
+
+    col_ok, col_mejorar = st.columns(2)
+
+    with col_ok:
+        if st.button("✅ Mi prompt está OK", use_container_width=True, type="primary"):
+            st.session_state.modo_refinamiento = False
             herramienta = st.session_state.datos_wizard.get("herramienta", "tu herramienta")
-            st.info(f"""
-            💡 **Próximos pasos:**
+            st.balloons()
+            st.success(f"""
+            🎉 **¡Listo!**
             1. Copia el prompt arriba
             2. Pégalo en **{herramienta}**
             3. ¡Obtén resultados profesionales!
             """)
 
-            st.markdown("---")
+    with col_mejorar:
+        if st.button("🔧 Deseo mejorarlo", use_container_width=True):
+            st.session_state.modo_refinamiento = True
+            st.rerun()
 
-            # BOTÓN INICIAR NUEVO PROMPT - AHORA FUERA DEL BLOQUE DEL BOTÓN GENERAR
-            if st.button("🔄 INICIAR NUEVO PROMPT", use_container_width=True, type="primary"):
-                _limpiar_wizard()
-                st.rerun()
+    # ===== PANEL DE REFINAMIENTO =====
+    if st.session_state.get("modo_refinamiento", False):
+        st.markdown("---")
+        st.markdown("### 🔧 Mejorar Prompt")
 
-        else:
-            st.error(f"❌ Error: {resultado['error']}")
+        # Menú desplegable con mejoras predefinidas
+        mejoras_predefinidas = [
+            "-- Selecciona una mejora --",
+            "📏 Hacerlo más largo y detallado",
+            "✂️ Hacerlo más corto y conciso",
+            "🎯 Más específico y menos genérico",
+            "💼 Tono más formal y profesional",
+            "😊 Tono más cercano y conversacional",
+            "📊 Agregar más datos y cifras concretas",
+            "🎨 Más énfasis en lo visual y estético",
+            "⚡ Más directo, menos introducciones",
+            "🔑 Enfatizar más las palabras clave",
+            "📄 Integrar más información de los documentos adjuntos",
+            "🎨 Alinear más con el manual de marca",
+            "🧩 Mejorar la estructura y organización",
+            "🚫 Agregar más restricciones de lo que NO hacer",
+            "💡 Agregar ejemplos o referencias concretas",
+            "🌍 Adaptar mejor al idioma/cultura objetivo",
+        ]
 
-            # Permitir reintentar o volver
-            col1, col2 = st.columns(2)
-            with col1:
-                if st.button("← Volver a editar", use_container_width=True):
-                    if "ultimo_resultado" in st.session_state:
-                        del st.session_state["ultimo_resultado"]
-                    st.session_state.paso_wizard = 4
+        mejora_seleccionada = st.selectbox(
+            "Mejoras sugeridas:",
+            mejoras_predefinidas,
+            key="refine_select",
+        )
+
+        # Input para cambios personalizados
+        cambio_custom = st.text_area(
+            "O escribe tus cambios específicos:",
+            placeholder="Ej: Agrega una sección sobre sostenibilidad, cambia el público a millennials, incluye más datos de ventas del PDF...",
+            height=80,
+            key="refine_custom",
+        )
+
+        if st.button("🚀 Aplicar mejora", use_container_width=True, type="primary"):
+            # Determinar qué mejora aplicar
+            instruccion_mejora = ""
+
+            if mejora_seleccionada != "-- Selecciona una mejora --":
+                instruccion_mejora = mejora_seleccionada
+
+            if cambio_custom.strip():
+                if instruccion_mejora:
+                    instruccion_mejora += f"\n\nAdemás: {cambio_custom.strip()}"
+                else:
+                    instruccion_mejora = cambio_custom.strip()
+
+            if not instruccion_mejora:
+                st.error("Selecciona una mejora o escribe tus cambios.")
+            elif not api_key:
+                st.error("API key no disponible.")
+            else:
+                with st.spinner("Refinando prompt..."):
+                    gen = PromptGenerator(api_key)
+                    resultado_refinado = gen.refinar(
+                        prompt_actual=resultado["prompt"],
+                        instruccion=instruccion_mejora,
+                        datos_originales=st.session_state.datos_wizard,
+                    )
+
+                if resultado_refinado["exito"]:
+                    rate_limiter.incrementar()
+
+                    # Actualizar resultado
+                    st.session_state.ultimo_resultado["prompt"] = resultado_refinado["prompt"]
+                    st.session_state.ultimo_resultado["costo"] += resultado_refinado["costo"]
+                    st.session_state.ultimo_resultado["tiempo"] += resultado_refinado["tiempo"]
+
+                    # Guardar en historial
+                    historial = st.session_state.get("historial_refinamiento", [])
+                    historial.append(instruccion_mejora)
+                    st.session_state.historial_refinamiento = historial
+
+                    st.session_state.modo_refinamiento = False
                     st.rerun()
-            with col2:
-                if st.button("🔄 INICIAR NUEVO PROMPT", use_container_width=True):
-                    _limpiar_wizard()
-                    st.rerun()
+                else:
+                    st.error(f"Error al refinar: {resultado_refinado['error']}")
+
+    # ===== BOTÓN NUEVO PROMPT (siempre visible) =====
+    st.markdown("---")
+    if st.button("🔄 INICIAR NUEVO PROMPT", use_container_width=True):
+        _limpiar_wizard()
+        st.rerun()
