@@ -1,11 +1,11 @@
 """
-wizard.py - Interfaz de usuario del wizard de 5 pasos
+wizard.py - Interfaz de usuario del wizard de 5 pasos (v3.1 mejorado con tags)
 """
 
 import os
 import yaml
 import streamlit as st
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 
 from core.generator import PromptGenerator
 from core.document_processor import DocumentProcessor
@@ -29,13 +29,37 @@ def _cargar_motores() -> Dict:
     except Exception as e:
         st.warning(f"⚠️ Error cargando engines.yaml: {e}")
 
-    # Fallback: retornar estructura mínima
+    # Fallback
     return {
         "texto": {
             "nombre": "📝 Generación de Texto",
             "herramientas": ["ChatGPT"],
             "parametros": {"tipo": {"label": "Tipo", "opciones": ["Artículo"]}}
         }
+    }
+
+
+def _cargar_tags() -> Dict:
+    """
+    Carga los tags desde config/tags.yaml
+    
+    Returns:
+        Diccionario con tags categorizados
+    """
+    ruta = os.path.join(os.path.dirname(__file__), "..", "config", "tags.yaml")
+
+    try:
+        if os.path.exists(ruta):
+            with open(ruta, "r", encoding="utf-8") as f:
+                config = yaml.safe_load(f)
+                return config.get("tags", {})
+    except Exception as e:
+        st.warning(f"⚠️ Error cargando tags.yaml: {e}")
+
+    # Fallback
+    return {
+        "estilo": ["Profesional", "Moderno"],
+        "prensa": ["Comunicado de prensa", "Objetivo/Neutral"]
     }
 
 
@@ -51,6 +75,7 @@ def _inicializar_session_state() -> None:
             "herramienta": None,
             "idea": "",
             "parametros": {},
+            "palabras_clave": "",
             "documentos": "",
             "notas": "",
             "idioma": "Español",
@@ -71,33 +96,14 @@ def mostrar_wizard_streamlit() -> None:
     progress = st.session_state.paso_wizard / 5
     st.progress(progress, text=f"Paso {st.session_state.paso_wizard}/5")
 
-    # ====================================================================
-    # PASO 1: Motor objetivo
-    # ====================================================================
     if st.session_state.paso_wizard == 1:
         _paso_1_motor_objetivo(motores)
-
-    # ====================================================================
-    # PASO 2: Herramienta
-    # ====================================================================
     elif st.session_state.paso_wizard == 2:
         _paso_2_herramienta(motores)
-
-    # ====================================================================
-    # PASO 3: Idea
-    # ====================================================================
     elif st.session_state.paso_wizard == 3:
         _paso_3_idea()
-
-    # ====================================================================
-    # PASO 4: Parámetros + Documentos
-    # ====================================================================
     elif st.session_state.paso_wizard == 4:
         _paso_4_parametros_documentos(motores)
-
-    # ====================================================================
-    # PASO 5: Resultado
-    # ====================================================================
     elif st.session_state.paso_wizard == 5:
         _paso_5_resultado(rate_limiter)
 
@@ -176,13 +182,14 @@ def _paso_3_idea() -> None:
 
 
 def _paso_4_parametros_documentos(motores: Dict) -> None:
-    """Paso 4: Parámetros y documentos"""
+    """Paso 4: Parámetros, palabras clave y documentos (MEJORADO)"""
     motor_key = st.session_state.datos_wizard.get("motor_key")
     motor_info = motores[motor_key]
 
-    st.markdown("## Paso 4: Parámetros y Documentación")
+    st.markdown("## Paso 4: Parámetros, Palabras Clave y Documentos")
 
-    # Parámetros
+    # ===== PARÁMETROS =====
+    st.markdown("### 📊 Parámetros Técnicos")
     parametros = st.session_state.datos_wizard.get("parametros", {})
 
     for param_key, param_config in motor_info["parametros"].items():
@@ -198,10 +205,48 @@ def _paso_4_parametros_documentos(motores: Dict) -> None:
 
     st.session_state.datos_wizard["parametros"] = parametros
 
-    # DOCUMENTOS
+    # ===== PALABRAS CLAVE (NUEVO) =====
     st.markdown("---")
-    st.markdown("### 📎 Adjuntar documentación")
-    st.info("Carga PDF, TXT, DOCX, imágenes. **ChatGPT analizará automáticamente y alimentará el prompt final.**")
+    st.markdown("### 🔑 Palabras Clave")
+    st.info("Las palabras clave mejoran significativamente la calidad del prompt final. Selecciona o escribe las tuyas.")
+
+    tags = _cargar_tags()
+    palabras_seleccionadas = []
+
+    # Tabs para diferentes categorías
+    tab_names = list(tags.keys())
+    tabs = st.tabs([f"{name.title()}" for name in tab_names])
+
+    for tab_idx, (categoria, items) in enumerate(tags.items()):
+        with tabs[tab_idx]:
+            cols = st.columns(2)
+            for idx, tag in enumerate(items):
+                with cols[idx % 2]:
+                    if st.checkbox(tag, key=f"tag_{categoria}_{tag}"):
+                        palabras_seleccionadas.append(tag)
+
+    # Text area para palabras personalizadas
+    st.markdown("**O escribe tus propias palabras clave:**")
+    palabras_custom = st.text_area(
+        "Palabras personalizadas (separa con comas):",
+        value=st.session_state.datos_wizard.get("palabras_clave", ""),
+        placeholder="ej: minimalista, futurista, tecnología, neon",
+        height=60,
+        key="input_palabras"
+    )
+
+    # Combinar
+    todas_palabras = palabras_seleccionadas + [p.strip() for p in palabras_custom.split(",") if p.strip()]
+    palabras_texto = ", ".join(todas_palabras)
+    st.session_state.datos_wizard["palabras_clave"] = palabras_texto
+
+    if todas_palabras:
+        st.success(f"✅ {len(todas_palabras)} palabras clave seleccionadas")
+
+    # ===== DOCUMENTOS =====
+    st.markdown("---")
+    st.markdown("### 📎 Documentación (Opcional)")
+    st.info("Carga PDF, TXT, DOCX, imágenes. ChatGPT analizará automáticamente e incorporará en el prompt.")
 
     archivos = st.file_uploader(
         "Sube archivos:",
@@ -210,7 +255,6 @@ def _paso_4_parametros_documentos(motores: Dict) -> None:
         key="wizard_files",
     )
 
-    # Procesar archivos
     texto_docs = ""
     if archivos:
         st.success(f"✅ {len(archivos)} archivo(s) - Serán procesados con ChatGPT")
@@ -219,10 +263,11 @@ def _paso_4_parametros_documentos(motores: Dict) -> None:
 
     st.session_state.datos_wizard["documentos"] = texto_docs
 
-    # Notas
+    # ===== NOTAS ADICIONALES =====
     st.markdown("---")
+    st.markdown("### 📝 Notas Adicionales")
     notas = st.text_area(
-        "Notas/especificaciones adicionales (opcional):",
+        "Especificaciones adicionales (opcional):",
         value=st.session_state.datos_wizard.get("notas", ""),
         height=80,
         placeholder="Ej: Debe incluir referencias a X, evitar Y, enfatizar Z...",
@@ -230,7 +275,8 @@ def _paso_4_parametros_documentos(motores: Dict) -> None:
     )
     st.session_state.datos_wizard["notas"] = notas
 
-    # Idioma
+    # ===== IDIOMA =====
+    st.markdown("---")
     idioma = st.selectbox(
         "Idioma del prompt generado:",
         ["Español", "English", "Français", "Deutsch", "Português"],
@@ -238,6 +284,7 @@ def _paso_4_parametros_documentos(motores: Dict) -> None:
     )
     st.session_state.datos_wizard["idioma"] = idioma
 
+    # ===== NAVEGACIÓN =====
     col1, col2 = st.columns(2)
     with col1:
         if st.button("← Atrás", use_container_width=True):
@@ -251,22 +298,21 @@ def _paso_4_parametros_documentos(motores: Dict) -> None:
 
 
 def _paso_5_resultado(rate_limiter: SessionRateLimiter) -> None:
-    """Paso 5: Mostrar resultado"""
+    """Paso 5: Mostrar resultado y generar prompt"""
     st.markdown("## Paso 5: Tu Prompt Profesional")
     st.markdown("Copia-pega este prompt en tu herramienta de IA")
 
-    # Mostrar widget de rate limiter
+    # Rate limiter widget
     rate_limiter.mostrar_widget_streamlit()
 
     if not rate_limiter.puede_generar():
         st.error("❌ Has alcanzado el límite de prompts por sesión")
-        if st.button("🔄 Cerrar sesión y reiniciar", use_container_width=True):
+        if st.button("🔄 Reiniciar sesión", use_container_width=True):
             rate_limiter.reiniciar_contador()
             st.rerun()
         return
 
-    # Obtener API key desde variable de ambiente
-    import os
+    # API key
     api_key = os.getenv("OPENAI_API_KEY")
 
     if not api_key:
@@ -283,7 +329,7 @@ def _paso_5_resultado(rate_limiter: SessionRateLimiter) -> None:
         if not api_key:
             st.error("API key no disponible. Contacta al administrador.")
         else:
-            with st.spinner("Analizando documentos y generando prompt..."):
+            with st.spinner("Analizando documentos, palabras clave e integrando para máxima calidad..."):
                 gen = PromptGenerator(api_key)
                 resultado = gen.generar(st.session_state.datos_wizard)
 
@@ -291,10 +337,16 @@ def _paso_5_resultado(rate_limiter: SessionRateLimiter) -> None:
                 rate_limiter.incrementar()
                 st.success("✅ Prompt generado exitosamente")
 
-                # Mostrar información extraída de documentos
+                # Información extraída
                 if resultado["info_documentos"]:
                     with st.expander("📊 Información extraída de documentos"):
                         st.markdown(resultado["info_documentos"])
+
+                # Palabras clave usadas
+                palabras = st.session_state.datos_wizard.get("palabras_clave", "")
+                if palabras:
+                    with st.expander("🔑 Palabras clave incorporadas"):
+                        st.markdown(f"**{palabras}**")
 
                 # Métricas
                 col_costo, col_tiempo = st.columns(2)
@@ -303,7 +355,7 @@ def _paso_5_resultado(rate_limiter: SessionRateLimiter) -> None:
                 with col_tiempo:
                     st.metric("Tiempo", f"{resultado['tiempo']:.1f}s")
 
-                # MOSTRAR PROMPT GENERADO
+                # PROMPT GENERADO
                 st.markdown("### 📋 Tu Prompt (listo para copiar-pegar)")
                 st.markdown("---")
                 st.code(resultado["prompt"], language="text")
@@ -325,10 +377,20 @@ def _paso_5_resultado(rate_limiter: SessionRateLimiter) -> None:
                     )
 
                 st.markdown("---")
-                st.info(f"💡 **Próximos pasos:**\n1. Copia el prompt arriba\n2. Pégalo en {st.session_state.datos_wizard['herramienta']}\n3. ¡Obtén resultados profesionales!")
+
+                # Info final
+                herramienta = st.session_state.datos_wizard.get("herramienta", "tu herramienta")
+                st.info(f"""
+                💡 **Próximos pasos:**
+                1. Copia el prompt arriba
+                2. Pégalo en **{herramienta}**
+                3. ¡Obtén resultados profesionales!
+                """)
 
                 st.markdown("---")
-                if st.button("🔄 Crear otro prompt", use_container_width=True):
+
+                # 🆕 BOTÓN INICIAR NUEVO PROMPT
+                if st.button("🔄 INICIAR NUEVO PROMPT", use_container_width=True, type="secondary"):
                     st.session_state.paso_wizard = 1
                     st.session_state.datos_wizard = {
                         "motor": None,
@@ -336,10 +398,12 @@ def _paso_5_resultado(rate_limiter: SessionRateLimiter) -> None:
                         "herramienta": None,
                         "idea": "",
                         "parametros": {},
+                        "palabras_clave": "",
                         "documentos": "",
                         "notas": "",
                         "idioma": "Español",
                     }
                     st.rerun()
+
             else:
                 st.error(f"❌ Error: {resultado['error']}")
