@@ -142,6 +142,11 @@ def _paso_1_motor_objetivo(motores: Dict) -> None:
                 st.rerun()
 
 
+def _es_separador(texto: str) -> bool:
+    """Detecta si un item de herramientas es un separador visual"""
+    return texto.startswith("──")
+
+
 def _paso_2_herramienta(motores: Dict) -> None:
     """Paso 2: Seleccionar herramienta específica"""
     motor_key = st.session_state.datos_wizard.get("motor_key")
@@ -156,6 +161,11 @@ def _paso_2_herramienta(motores: Dict) -> None:
         key="select_herramienta",
     )
 
+    # Validar que no sea un separador
+    es_sep = _es_separador(herramienta)
+    if es_sep:
+        st.warning("⬆️ Esa es una categoría, selecciona una herramienta de la lista.")
+
     col1, col2 = st.columns(2)
     with col1:
         if st.button("← Atrás", use_container_width=True):
@@ -164,9 +174,12 @@ def _paso_2_herramienta(motores: Dict) -> None:
 
     with col2:
         if st.button("Siguiente →", use_container_width=True, type="primary"):
-            st.session_state.datos_wizard["herramienta"] = herramienta
-            st.session_state.paso_wizard = 3
-            st.rerun()
+            if es_sep:
+                st.error("Selecciona una herramienta válida, no una categoría.")
+            else:
+                st.session_state.datos_wizard["herramienta"] = herramienta
+                st.session_state.paso_wizard = 3
+                st.rerun()
 
 
 def _paso_3_idea() -> None:
