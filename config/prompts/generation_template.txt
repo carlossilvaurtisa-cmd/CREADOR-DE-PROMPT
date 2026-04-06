@@ -1,0 +1,32 @@
+CREA UN PROMPT PROFESIONAL Y EXTENSO para: {herramienta}
+
+INFORMACIÓN DEL USUARIO:
+- Motor: {motor}
+- Idea/Concepto: {idea}
+- Parámetros técnicos: {parametros}
+- Idioma solicitado: {idioma}
+
+INFORMACIÓN EXTRAÍDA DE DOCUMENTOS:
+{informacion_documentos}
+
+{notas_seccion}
+
+REQUISITOS PARA EL PROMPT GENERADO:
+✓ Mínimo 300-500 palabras
+✓ Altamente específico y detallado
+✓ Optimizado para: {herramienta}
+✓ Estructura profesional y clara
+✓ Listo para copiar-pegar directamente
+✓ INCORPORA COMPLETAMENTE la información de los documentos
+✓ Incluye detalles técnicos específicos para {herramienta}
+
+ESTRUCTURA SUGERIDA PARA EL PROMPT:
+1. Instrucción principal clara
+2. Detalles y especificaciones técnicas (incluye datos de documentos)
+3. Estilo, mood, o características específicas
+4. Restricciones y limitaciones
+5. Formato esperado del resultado
+6. Ejemplos o referencias si son relevantes
+
+GENERA AHORA EL PROMPT PROFESIONAL:
+(Responde SOLO con el prompt, sin explicaciones. Es decir, el usuario debe poder copiar-pegar tu respuesta directamente en {herramienta})
