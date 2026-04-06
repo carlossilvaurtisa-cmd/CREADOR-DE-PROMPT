@@ -2,9 +2,10 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Instalar dependencias del sistema
+# Instalar dependencias del sistema (incluyendo para pdf2image)
 RUN apt-get update && apt-get install -y \
     build-essential \
+    libpoppler-cpp-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Copiar requirements
@@ -15,7 +16,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copiar código
 COPY app.py .
-COPY wizard_creator.py .
+COPY config/ config/
+COPY core/ core/
+COPY ui/ ui/
 
 # Exponer puerto
 EXPOSE 8501
