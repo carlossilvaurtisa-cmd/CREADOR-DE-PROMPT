@@ -1,5 +1,5 @@
 """
-wizard.py - Interfaz de usuario del wizard de 5 pasos (v3.2 con palabras clave y botón nuevo)
+wizard.py - Interfaz de usuario del wizard de 5 pasos (v3.2 con palabras clave y botón nuevo - CORREGIDO)
 """
 
 import os
@@ -13,12 +13,7 @@ from core.rate_limiter import SessionRateLimiter
 
 
 def _cargar_motores() -> Dict:
-    """
-    Carga los motores desde config/engines.yaml
-    
-    Returns:
-        Diccionario con configuración de motores
-    """
+    """Carga los motores desde config/engines.yaml"""
     ruta = os.path.join(os.path.dirname(__file__), "..", "config", "engines.yaml")
 
     try:
@@ -29,7 +24,6 @@ def _cargar_motores() -> Dict:
     except Exception as e:
         st.warning(f"⚠️ Error cargando engines.yaml: {e}")
 
-    # Fallback
     return {
         "texto": {
             "nombre": "📝 Generación de Texto",
@@ -40,12 +34,7 @@ def _cargar_motores() -> Dict:
 
 
 def _cargar_tags() -> Dict:
-    """
-    Carga los tags desde config/tags.yaml
-    
-    Returns:
-        Diccionario con tags categorizados
-    """
+    """Carga los tags desde config/tags.yaml"""
     ruta = os.path.join(os.path.dirname(__file__), "..", "config", "tags.yaml")
 
     try:
@@ -56,10 +45,25 @@ def _cargar_tags() -> Dict:
     except Exception as e:
         st.warning(f"⚠️ Error cargando tags.yaml: {e}")
 
-    # Fallback
     return {
         "estilo": ["Profesional", "Moderno"],
         "prensa": ["Comunicado de prensa", "Objetivo/Neutral"]
+    }
+
+
+def _limpiar_wizard() -> None:
+    """Limpia completamente el wizard"""
+    st.session_state.paso_wizard = 1
+    st.session_state.datos_wizard = {
+        "motor": None,
+        "motor_key": None,
+        "herramienta": None,
+        "idea": "",
+        "parametros": {},
+        "palabras_clave": "",
+        "documentos": "",
+        "notas": "",
+        "idioma": "Español",
     }
 
 
@@ -84,31 +88,11 @@ def _inicializar_session_state() -> None:
     if "rate_limiter" not in st.session_state:
         st.session_state.rate_limiter = SessionRateLimiter(limite_por_sesion=30)
 
-    if "resetear_wizard" not in st.session_state:
-        st.session_state.resetear_wizard = False
-
 
 def mostrar_wizard_streamlit() -> None:
     """Función principal que renderiza el wizard de 5 pasos"""
 
     _inicializar_session_state()
-    
-    # Verificar si necesita resetear
-    if st.session_state.resetear_wizard:
-        st.session_state.paso_wizard = 1
-        st.session_state.datos_wizard = {
-            "motor": None,
-            "motor_key": None,
-            "herramienta": None,
-            "idea": "",
-            "parametros": {},
-            "palabras_clave": "",
-            "documentos": "",
-            "notas": "",
-            "idioma": "Español",
-        }
-        st.session_state.resetear_wizard = False
-    
     motores = _cargar_motores()
     rate_limiter = st.session_state.rate_limiter
 
@@ -202,7 +186,7 @@ def _paso_3_idea() -> None:
 
 
 def _paso_4_parametros_documentos(motores: Dict) -> None:
-    """Paso 4: Parámetros, palabras clave y documentos (MEJORADO)"""
+    """Paso 4: Parámetros, palabras clave y documentos"""
     motor_key = st.session_state.datos_wizard.get("motor_key")
     motor_info = motores[motor_key]
 
@@ -225,7 +209,7 @@ def _paso_4_parametros_documentos(motores: Dict) -> None:
 
     st.session_state.datos_wizard["parametros"] = parametros
 
-    # ===== PALABRAS CLAVE (NUEVO) =====
+    # ===== PALABRAS CLAVE =====
     st.markdown("---")
     st.markdown("### 🔑 Palabras Clave")
     st.info("Las palabras clave mejoran significativamente la calidad del prompt final. Selecciona o escribe las tuyas.")
@@ -233,7 +217,6 @@ def _paso_4_parametros_documentos(motores: Dict) -> None:
     tags = _cargar_tags()
     palabras_seleccionadas = []
 
-    # Tabs para diferentes categorías
     tab_names = list(tags.keys())
     tabs = st.tabs([f"{name.title()}" for name in tab_names])
 
@@ -245,7 +228,6 @@ def _paso_4_parametros_documentos(motores: Dict) -> None:
                     if st.checkbox(tag, key=f"tag_{categoria}_{tag}"):
                         palabras_seleccionadas.append(tag)
 
-    # Text area para palabras personalizadas
     st.markdown("**O escribe tus propias palabras clave:**")
     palabras_custom = st.text_area(
         "Palabras personalizadas (separa con comas):",
@@ -255,7 +237,6 @@ def _paso_4_parametros_documentos(motores: Dict) -> None:
         key="input_palabras"
     )
 
-    # Combinar
     todas_palabras = palabras_seleccionadas + [p.strip() for p in palabras_custom.split(",") if p.strip()]
     palabras_texto = ", ".join(todas_palabras)
     st.session_state.datos_wizard["palabras_clave"] = palabras_texto
@@ -278,7 +259,14 @@ def _paso_4_parametros_documentos(motores: Dict) -> None:
     texto_docs = ""
     if archivos:
         st.success(f"✅ {len(archivos)} archivo(s) - Serán procesados con ChatGPT")
-        processor = DocumentProcessor()
+        # Obtener API key para el procesador
+        api_key = os.getenv("OPENAI_API_KEY")
+        if api_key:
+            from openai import OpenAI
+            cliente = OpenAI(api_key=api_key)
+            processor = DocumentProcessor(cliente_openai=cliente)
+        else:
+            processor = DocumentProcessor()
         texto_docs = processor.procesar_archivos(archivos)
 
     st.session_state.datos_wizard["documentos"] = texto_docs
@@ -322,7 +310,6 @@ def _paso_5_resultado(rate_limiter: SessionRateLimiter) -> None:
     st.markdown("## Paso 5: Tu Prompt Profesional")
     st.markdown("Copia-pega este prompt en tu herramienta de IA")
 
-    # Rate limiter widget
     rate_limiter.mostrar_widget_streamlit()
 
     if not rate_limiter.puede_generar():
@@ -332,7 +319,6 @@ def _paso_5_resultado(rate_limiter: SessionRateLimiter) -> None:
             st.rerun()
         return
 
-    # API key
     api_key = os.getenv("OPENAI_API_KEY")
 
     if not api_key:
@@ -357,31 +343,26 @@ def _paso_5_resultado(rate_limiter: SessionRateLimiter) -> None:
                 rate_limiter.incrementar()
                 st.success("✅ Prompt generado exitosamente")
 
-                # Información extraída
                 if resultado["info_documentos"]:
                     with st.expander("📊 Información extraída de documentos"):
                         st.markdown(resultado["info_documentos"])
 
-                # Palabras clave usadas
                 palabras = st.session_state.datos_wizard.get("palabras_clave", "")
                 if palabras:
                     with st.expander("🔑 Palabras clave incorporadas"):
                         st.markdown(f"**{palabras}**")
 
-                # Métricas
                 col_costo, col_tiempo = st.columns(2)
                 with col_costo:
                     st.metric("Costo est.", f"${resultado['costo']:.4f}")
                 with col_tiempo:
                     st.metric("Tiempo", f"{resultado['tiempo']:.1f}s")
 
-                # PROMPT GENERADO
                 st.markdown("### 📋 Tu Prompt (listo para copiar-pegar)")
                 st.markdown("---")
                 st.code(resultado["prompt"], language="text")
                 st.markdown("---")
 
-                # Acciones
                 col_copy, col_download = st.columns(2)
                 with col_copy:
                     if st.button("📋 Copiar al portapapeles", use_container_width=True):
@@ -398,7 +379,6 @@ def _paso_5_resultado(rate_limiter: SessionRateLimiter) -> None:
 
                 st.markdown("---")
 
-                # Info final
                 herramienta = st.session_state.datos_wizard.get("herramienta", "tu herramienta")
                 st.info(f"""
                 💡 **Próximos pasos:**
@@ -409,11 +389,14 @@ def _paso_5_resultado(rate_limiter: SessionRateLimiter) -> None:
 
                 st.markdown("---")
 
-                # 🆕 BOTÓN INICIAR NUEVO PROMPT
-                st.markdown("---")
-                if st.button("🔄 INICIAR NUEVO PROMPT", use_container_width=True, type="secondary", key="btn_nuevo_prompt_final"):
-                    st.session_state.resetear_wizard = True
-                    st.rerun()
+                # BOTÓN INICIAR NUEVO PROMPT - VERSIÓN SIMPLE
+                col_nuevo = st.columns(1)[0]
+                with col_nuevo:
+                    if st.button("🔄 INICIAR NUEVO PROMPT", use_container_width=True, type="secondary"):
+                        # Limpiar TODO
+                        _limpiar_wizard()
+                        # Forzar rerun desde cero
+                        st.rerun()
 
             else:
                 st.error(f"❌ Error: {resultado['error']}")
