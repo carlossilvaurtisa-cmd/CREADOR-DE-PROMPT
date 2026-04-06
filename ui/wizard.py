@@ -1,5 +1,5 @@
 """
-wizard.py - Interfaz de usuario del wizard de 5 pasos (v3.2 con palabras clave y botón nuevo - CORREGIDO)
+wizard.py - Interfaz de usuario del wizard de 5 pasos (v3.2.1 - Fix reinicio + docs)
 """
 
 import os
@@ -52,7 +52,8 @@ def _cargar_tags() -> Dict:
 
 
 def _limpiar_wizard() -> None:
-    """Limpia completamente el wizard"""
+    """Limpia completamente el wizard incluyendo keys de widgets"""
+    # Resetear paso y datos
     st.session_state.paso_wizard = 1
     st.session_state.datos_wizard = {
         "motor": None,
@@ -65,6 +66,18 @@ def _limpiar_wizard() -> None:
         "notas": "",
         "idioma": "Español",
     }
+
+    # Limpiar resultado guardado
+    if "ultimo_resultado" in st.session_state:
+        del st.session_state["ultimo_resultado"]
+
+    # Limpiar TODAS las keys de widgets para evitar conflicto
+    keys_a_limpiar = [k for k in st.session_state.keys() if k.startswith((
+        "tag_", "param_", "input_", "select_", "wizard_files",
+        "wizard_api_key", "select_herramienta", "select_idioma",
+    ))]
+    for key in keys_a_limpiar:
+        del st.session_state[key]
 
 
 def _inicializar_session_state() -> None:
@@ -331,6 +344,7 @@ def _paso_5_resultado(rate_limiter: SessionRateLimiter) -> None:
     else:
         st.info("🔐 Usando API key centralizada de GIRO")
 
+    # ===== GENERAR PROMPT (guarda resultado en session_state) =====
     if st.button("🚀 Generar Prompt (con análisis de documentos)", use_container_width=True, type="primary"):
         if not api_key:
             st.error("API key no disponible. Contacta al administrador.")
@@ -339,64 +353,85 @@ def _paso_5_resultado(rate_limiter: SessionRateLimiter) -> None:
                 gen = PromptGenerator(api_key)
                 resultado = gen.generar(st.session_state.datos_wizard)
 
+            # Guardar resultado en session_state para que persista
+            st.session_state.ultimo_resultado = resultado
+
             if resultado["exito"]:
                 rate_limiter.incrementar()
-                st.success("✅ Prompt generado exitosamente")
 
-                if resultado["info_documentos"]:
-                    with st.expander("📊 Información extraída de documentos"):
-                        st.markdown(resultado["info_documentos"])
+            # Rerun para mostrar resultado desde session_state
+            st.rerun()
 
-                palabras = st.session_state.datos_wizard.get("palabras_clave", "")
-                if palabras:
-                    with st.expander("🔑 Palabras clave incorporadas"):
-                        st.markdown(f"**{palabras}**")
+    # ===== MOSTRAR RESULTADO (desde session_state, independiente del botón) =====
+    if "ultimo_resultado" in st.session_state:
+        resultado = st.session_state.ultimo_resultado
 
-                col_costo, col_tiempo = st.columns(2)
-                with col_costo:
-                    st.metric("Costo est.", f"${resultado['costo']:.4f}")
-                with col_tiempo:
-                    st.metric("Tiempo", f"{resultado['tiempo']:.1f}s")
+        if resultado["exito"]:
+            st.success("✅ Prompt generado exitosamente")
 
-                st.markdown("### 📋 Tu Prompt (listo para copiar-pegar)")
-                st.markdown("---")
-                st.code(resultado["prompt"], language="text")
-                st.markdown("---")
+            if resultado["info_documentos"]:
+                with st.expander("📊 Información extraída de documentos"):
+                    st.markdown(resultado["info_documentos"])
 
-                col_copy, col_download = st.columns(2)
-                with col_copy:
-                    if st.button("📋 Copiar al portapapeles", use_container_width=True):
-                        st.info("✅ Selecciona todo (Ctrl+A) y copia (Ctrl+C)")
+            palabras = st.session_state.datos_wizard.get("palabras_clave", "")
+            if palabras:
+                with st.expander("🔑 Palabras clave incorporadas"):
+                    st.markdown(f"**{palabras}**")
 
-                with col_download:
-                    st.download_button(
-                        label="⬇️ Descargar como TXT",
-                        data=resultado["prompt"],
-                        file_name=f"prompt_{int(__import__('time').time())}.txt",
-                        mime="text/plain",
-                        use_container_width=True,
-                    )
+            col_costo, col_tiempo = st.columns(2)
+            with col_costo:
+                st.metric("Costo est.", f"${resultado['costo']:.4f}")
+            with col_tiempo:
+                st.metric("Tiempo", f"{resultado['tiempo']:.1f}s")
 
-                st.markdown("---")
+            st.markdown("### 📋 Tu Prompt (listo para copiar-pegar)")
+            st.markdown("---")
+            st.code(resultado["prompt"], language="text")
+            st.markdown("---")
 
-                herramienta = st.session_state.datos_wizard.get("herramienta", "tu herramienta")
-                st.info(f"""
-                💡 **Próximos pasos:**
-                1. Copia el prompt arriba
-                2. Pégalo en **{herramienta}**
-                3. ¡Obtén resultados profesionales!
-                """)
+            col_copy, col_download = st.columns(2)
+            with col_copy:
+                if st.button("📋 Copiar al portapapeles", use_container_width=True):
+                    st.info("✅ Selecciona todo (Ctrl+A) y copia (Ctrl+C)")
 
-                st.markdown("---")
+            with col_download:
+                st.download_button(
+                    label="⬇️ Descargar como TXT",
+                    data=resultado["prompt"],
+                    file_name=f"prompt_{int(__import__('time').time())}.txt",
+                    mime="text/plain",
+                    use_container_width=True,
+                )
 
-                # BOTÓN INICIAR NUEVO PROMPT - VERSIÓN SIMPLE
-                col_nuevo = st.columns(1)[0]
-                with col_nuevo:
-                    if st.button("🔄 INICIAR NUEVO PROMPT", use_container_width=True, type="secondary"):
-                        # Limpiar TODO
-                        _limpiar_wizard()
-                        # Forzar rerun desde cero
-                        st.rerun()
+            st.markdown("---")
 
-            else:
-                st.error(f"❌ Error: {resultado['error']}")
+            herramienta = st.session_state.datos_wizard.get("herramienta", "tu herramienta")
+            st.info(f"""
+            💡 **Próximos pasos:**
+            1. Copia el prompt arriba
+            2. Pégalo en **{herramienta}**
+            3. ¡Obtén resultados profesionales!
+            """)
+
+            st.markdown("---")
+
+            # BOTÓN INICIAR NUEVO PROMPT - AHORA FUERA DEL BLOQUE DEL BOTÓN GENERAR
+            if st.button("🔄 INICIAR NUEVO PROMPT", use_container_width=True, type="primary"):
+                _limpiar_wizard()
+                st.rerun()
+
+        else:
+            st.error(f"❌ Error: {resultado['error']}")
+
+            # Permitir reintentar o volver
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.button("← Volver a editar", use_container_width=True):
+                    if "ultimo_resultado" in st.session_state:
+                        del st.session_state["ultimo_resultado"]
+                    st.session_state.paso_wizard = 4
+                    st.rerun()
+            with col2:
+                if st.button("🔄 INICIAR NUEVO PROMPT", use_container_width=True):
+                    _limpiar_wizard()
+                    st.rerun()
