@@ -390,8 +390,9 @@ def _paso_5_resultado(rate_limiter: SessionRateLimiter) -> None:
                 st.markdown("---")
 
                 # 🆕 BOTÓN INICIAR NUEVO PROMPT
-                if st.button("🔄 INICIAR NUEVO PROMPT", use_container_width=True, type="secondary"):
-                    st.session_state.paso_wizard = 1
+                st.markdown("---")
+                if st.button("🔄 INICIAR NUEVO PROMPT", use_container_width=True, type="secondary", key="btn_nuevo_prompt"):
+                    # Limpiar datos ANTES de cambiar paso
                     st.session_state.datos_wizard = {
                         "motor": None,
                         "motor_key": None,
@@ -403,6 +404,9 @@ def _paso_5_resultado(rate_limiter: SessionRateLimiter) -> None:
                         "notas": "",
                         "idioma": "Español",
                     }
+                    # Cambiar paso DESPUÉS
+                    st.session_state.paso_wizard = 1
+                    # Rerun
                     st.rerun()
 
             else:
