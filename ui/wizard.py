@@ -1,5 +1,5 @@
 """
-wizard.py - Interfaz de usuario del wizard de 5 pasos (v3.1 mejorado con tags)
+wizard.py - Interfaz de usuario del wizard de 5 pasos (v3.2 con palabras clave y botón nuevo)
 """
 
 import os
