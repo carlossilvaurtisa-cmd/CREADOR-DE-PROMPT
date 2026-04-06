@@ -84,9 +84,9 @@ class SessionRateLimiter:
 
         with col3:
             if restantes > 0:
-                st.success(f"✅ {restantes} restantes", help="Prompts disponibles en esta sesión")
+                st.success(f"✅ {restantes} restantes")
             else:
-                st.error("❌ Límite alcanzado", help="Se alcanzó el límite de prompts por sesión")
+                st.error("❌ Límite alcanzado")
 
     def reiniciar_contador(self) -> None:
         """Reinicia el contador (uso administrativo)"""
