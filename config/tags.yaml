@@ -1,0 +1,151 @@
+# Tags configurables para Creador de Prompts v3.1
+# Categoría: Estilo, Mood, Contexto, Calidad, Estrategia y PRENSA
+
+tags:
+  # ESTILO Y VISUAL
+  estilo:
+    - Minimalista
+    - Moderno
+    - Profesional
+    - Audaz
+    - Elegante
+    - Dinámico
+    - Geométrico
+    - Orgánico
+    - Plano
+    - Realista
+
+  # MOOD Y EMOCIÓN
+  mood:
+    - Épico
+    - Inspirador
+    - Confianza
+    - Urgencia
+    - Lujo
+    - Accesible
+    - Futurista
+    - Nostálgico
+    - Juguetón
+    - Sombrío
+
+  # CONTEXTO COMERCIAL
+  contexto:
+    - Venta
+    - Marca
+    - Startup
+    - Corporate
+    - B2B
+    - B2C
+    - Social
+    - Local
+    - Global
+    - Sostenible
+
+  # CALIDAD Y TÉCNICA
+  calidad:
+    - Detalladísimo
+    - Alta resolución
+    - Bien iluminado
+    - Optimizado
+    - Consistente
+    - Composición balanceada
+    - Tipografía clara
+    - Paleta cohesiva
+    - Sin distracciones
+    - Listo para producción
+
+  # ESTRATEGIA Y RESULTADO
+  estrategia:
+    - Viral
+    - Conversión
+    - Diferenciador
+    - Directos
+    - Estratégico
+    - Atemporal
+    - Contextualizado
+    - Multi-plataforma
+    - Impactante
+    - Listo para usar
+
+  # 🆕 PRENSA Y COMUNICACIÓN CORPORATIVA
+  prensa:
+    - Comunicado de prensa
+    - Noticia impactante
+    - Titular atractivo
+    - Verificable
+    - Objetivo/Neutral
+    - Credibilidad
+    - Newsworthy
+    - Pirámide invertida
+    - Citeable
+    - Timely (Oportuno)
+    - Claridad periodística
+    - Atribución clara
+    - Lenguaje directo
+    - Hook narrativo
+    - Storytelling
+    - Contexto histórico
+    - Impacto social
+    - Quotes relevantes
+    - Press release
+    - Fact-checked
+
+# DESCRIPCIÓN DE TAGS PRENSA
+prensa_descripcion:
+  comunicado_de_prensa: "Formato oficial para anuncios a medios"
+  noticia_impactante: "Que genere interés periodístico real"
+  titular_atractivo: "Gancho que atrae atención de editores"
+  verificable: "Información que puede ser comprobada"
+  objetivo_neutral: "Lenguaje imparcial, sin sesgos"
+  credibilidad: "Fuente confiable, datos sólidos"
+  newsworthy: "Valor periodístico alto"
+  piramide_invertida: "Información más importante primero"
+  citeable: "Frases memorables, quotables"
+  timely: "Relevante ahora, oportuno"
+  claridad_periodistica: "Claro, conciso, sin jerga"
+  atribucion_clara: "Fuentes bien identificadas"
+  lenguaje_directo: "Sin rodeos, específico"
+  hook_narrativo: "Gancho que engancha al lector"
+  storytelling: "Narrativa que cuenta una historia"
+  contexto_historico: "Proporciona perspectiva temporal"
+  impacto_social: "Relevancia para la comunidad"
+  quotes_relevantes: "Citas de fuentes autorizadas"
+  press_release: "Formato para distribución a medios"
+  fact_checked: "Información verificada y validada"
+
+# COMBINACIONES RECOMENDADAS POR USO
+combos_recomendadas:
+  prensa_general:
+    - Comunicado de prensa
+    - Objetivo/Neutral
+    - Verificable
+    - Claridad periodística
+    - Atribución clara
+
+  prensa_impactante:
+    - Noticia impactante
+    - Titular atractivo
+    - Hook narrativo
+    - Storytelling
+    - Newsworthy
+
+  prensa_corporativa:
+    - Press release
+    - Profesional
+    - Credibilidad
+    - Lenguaje directo
+    - Timely
+
+  prensa_investigativa:
+    - Fact-checked
+    - Verificable
+    - Contexto histórico
+    - Impacto social
+    - Storytelling
+
+  prensa_social:
+    - Viral
+    - Impactante
+    - Social
+    - Hook narrativo
+    - Directos
