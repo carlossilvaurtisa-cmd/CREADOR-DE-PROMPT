@@ -3,6 +3,7 @@ document_processor.py - Extracción de contenido de documentos con fallbacks
 """
 
 import base64
+import io
 from typing import Optional, Tuple
 from pathlib import Path
 import streamlit as st
@@ -23,6 +24,17 @@ class DocumentProcessor:
             cliente_openai: Cliente OpenAI para vision (opcional)
         """
         self.cliente = cliente_openai
+        
+        # Si no se proporciona cliente, intentar crear uno
+        if self.cliente is None:
+            try:
+                import os
+                from openai import OpenAI
+                api_key = os.getenv("OPENAI_API_KEY")
+                if api_key:
+                    self.cliente = OpenAI(api_key=api_key)
+            except Exception:
+                pass
 
     def procesar_archivos(self, archivos_streamlit: list) -> str:
         """
